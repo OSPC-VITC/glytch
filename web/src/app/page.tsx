@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { AnnouncementsSection } from "@/components/sections/Announcements";
 import { ResourcesSection } from "@/components/sections/Resources";
 import { ContactSection } from "@/components/sections/Contact";
@@ -5,16 +8,89 @@ import DemoOne from "@/components/ui/demo-one";
 import { ParallaxContainer, ParallaxLayer } from "@/components/ui/parallax";
 
 export default function Home() {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const targetDate = new Date("2025-09-24T00:00:00").getTime();
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (difference % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        setTimeLeft({ days, hours, minutes, seconds });
+      } else {
+        clearInterval(interval);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <ParallaxContainer>
+      {/* Hero Background */}
       <ParallaxLayer depth={0.15}>
         <DemoOne />
+
+        {/* Countdown floating inside hero */}
+        <div
+          className="absolute top-[65%] left-1/2 -translate-x-1/2 
+             w-fit px-6 md:px-10 py-4 rounded-2xl
+             bg-black/80 backdrop-blur-md border border-white/10
+             shadow-[0_0_25px_#00f6ff] flex items-center justify-center gap-6 md:gap-12
+             text-white z-20 whitespace-nowrap"
+        >
+          <div className="text-xs md:text-sm lg:text-lg font-medium text-white/90 truncate max-w-[180px] md:max-w-none">
+            Venue: <span className="text-cyan-400">Kamaraj Auditorium</span>
+          </div>
+          <div className="flex space-x-4 md:space-x-6 text-center font-mono shrink-0">
+            <div>
+              <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.days}</p>
+              <span className="text-[10px] md:text-xs text-gray-300">DAYS</span>
+            </div>
+            <div>
+              <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.hours}</p>
+              <span className="text-[10px] md:text-xs text-gray-300">HRS</span>
+            </div>
+            <div>
+              <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.minutes}</p>
+              <span className="text-[10px] md:text-xs text-gray-300">MIN</span>
+            </div>
+            <div>
+              <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.seconds}</p>
+              <span className="text-[10px] md:text-xs text-gray-300">SEC</span>
+            </div>
+          </div>
+          <div className="text-xs md:text-sm lg:text-lg font-medium text-white/90 shrink-0">
+            Date: <span className="text-cyan-400">24 Sep 2025</span>
+          </div>
+        </div>
       </ParallaxLayer>
+
+      {/* Event Portal (comes after hero) */}
       <ParallaxLayer depth={0.35}>
-        <main className="px-6 py-10 max-w-5xl mx-auto space-y-16">
-          <header className="space-y-2">
-            <h1 className="text-3xl font-semibold">Event Portal</h1>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+        <main className="px-6 py-16 max-w-5xl mx-auto space-y-16">
+          <header className="space-y-2 text-center">
+            <h1 className="text-3xl md:text-4xl font-semibold text-white">
+              Event Portal
+            </h1>
+            <p className="text-sm text-gray-400">
               Announcements, resources, and contact information for participants.
             </p>
           </header>

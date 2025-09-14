@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { motion, useScroll, useTransform } from "framer-motion";
 import FuzzyText from "@/components/ui/fuzzy-text";
 
 export function ShaderAnimation() {
@@ -135,15 +136,22 @@ export function ShaderAnimation() {
 }
 
 export default function DemoOne() {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.85]);
+  const radius = useTransform(scrollYProgress, [0, 0.5], ["0px", "40px"]);
+
   return (
-    <div className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden">
+    <motion.div
+      ref={sectionRef}
+      style={{ scale, borderRadius: radius }}
+      className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden"
+    >
       <ShaderAnimation />
       <div className="absolute inset-0 z-10 flex items-center justify-center">
-        <FuzzyText>
-          BluePrint
-        </FuzzyText>
+        <FuzzyText>BluePrint</FuzzyText>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

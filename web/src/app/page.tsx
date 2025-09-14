@@ -7,7 +7,7 @@ import { ContactSection } from "@/components/sections/Contact";
 import { RulesSection } from "@/components/sections/Rules";
 import { TimelineSection } from "@/components/sections/Timeline";
 import DemoOne from "@/components/ui/demo-one";
-import { ParallaxContainer, ParallaxLayer } from "@/components/ui/parallax";
+ 
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({
@@ -45,10 +45,9 @@ export default function Home() {
   }, []);
 
   return (
-    <ParallaxContainer>
+    <>
       {/* Hero Background */}
-      <ParallaxLayer depth={0.15}>
-        <DemoOne />
+      <DemoOne />
 
         {/* Countdown floating inside hero */}
         <div
@@ -83,12 +82,9 @@ export default function Home() {
             Date: <span className="text-cyan-400">24 Sep 2025</span>
           </div>
         </div>
-      </ParallaxLayer>
-
       {/* Event Portal (comes after hero) */}
-      <ParallaxLayer depth={0.35}>
 
-<main className="px-6 py-40 max-w-5xl mx-auto space-y-16">
+<main className="px-6 py-40 max-w-5xl mx-auto space-y-16 bg-transparent">
   <header className="space-y-2 text-center">
     <h1 className="text-3xl md:text-4xl font-semibold text-white">
       Event Info
@@ -118,8 +114,6 @@ export default function Home() {
     <ContactSection />
   </div>
 </main>
-
-      </ParallaxLayer>
-    </ParallaxContainer>
+    </>
   );
 }

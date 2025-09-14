@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { AnnouncementsSection } from "@/components/sections/Announcements";
 import { ResourcesSection } from "@/components/sections/Resources";
 import { ContactSection } from "@/components/sections/Contact";
+import { RulesSection } from "@/components/sections/Rules";
+import { TimelineSection } from "@/components/sections/Timeline";
 import DemoOne from "@/components/ui/demo-one";
 import { ParallaxContainer, ParallaxLayer } from "@/components/ui/parallax";
 
@@ -85,26 +87,38 @@ export default function Home() {
 
       {/* Event Portal (comes after hero) */}
       <ParallaxLayer depth={0.35}>
-        <main className="px-6 py-16 max-w-5xl mx-auto space-y-16">
-          <header className="space-y-2 text-center">
-            <h1 className="text-3xl md:text-4xl font-semibold text-white">
-              Event Portal
-            </h1>
-            <p className="text-sm text-gray-400">
-              Announcements, resources, and contact information for participants.
-            </p>
-          </header>
 
-          <div id="announcements" className="scroll-mt-24">
-            <AnnouncementsSection />
-          </div>
-          <div id="resources" className="scroll-mt-24">
-            <ResourcesSection />
-          </div>
-          <div id="contact" className="scroll-mt-24">
-            <ContactSection />
-          </div>
-        </main>
+<main className="px-6 py-40 max-w-5xl mx-auto space-y-16">
+  <header className="space-y-2 text-center">
+    <h1 className="text-3xl md:text-4xl font-semibold text-white">
+      Event Info
+    </h1>
+    <p className="text-sm text-gray-400">
+      Information about the event and overview.
+    </p>
+  </header>
+
+  <div id="timeline" className="scroll-mt-24">
+    <TimelineSection/>
+  </div>
+
+  <div id="rules" className="scroll-mt-24">
+    <RulesSection/>
+  </div>
+
+  <div id="announcements" className="scroll-mt-24">
+    <AnnouncementsSection />
+  </div>
+
+  <div id="resources" className="scroll-mt-24">
+    <ResourcesSection />
+  </div>
+
+  <div id="contact" className="scroll-mt-24">
+    <ContactSection />
+  </div>
+</main>
+
       </ParallaxLayer>
     </ParallaxContainer>
   );

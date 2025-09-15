@@ -25,7 +25,14 @@ src/
 
 ## Environment
 
-Copy `.env.example` to `.env.local` and fill values:
+Create or update `.env.local` in the `web` directory with these values:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+```
+
+Optional (existing variables):
 
 ```
 NEXT_PUBLIC_DISCORD_URL=

@@ -18,6 +18,8 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      // Ignoring heavy shader component from lint for now
+      "src/components/ui/galaxy.tsx",
     ],
   },
 ];

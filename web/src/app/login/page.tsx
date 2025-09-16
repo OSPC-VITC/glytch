@@ -3,6 +3,7 @@
 import { Suspense, type FormEvent, useCallback, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getSupabaseClient } from "@/lib/supabaseClient";
+import ElectricBorder from "@/components/ui/ElectricBorder";
 
 type AuthMode = "sign-in" | "sign-up";
 
@@ -27,26 +28,41 @@ function LoginForm() {
 
       try {
         const supabase = getSupabaseClient();
+        const normalizedEmail = email.trim().toLowerCase();
         if (mode === "sign-in") {
           const { error: signInError } = await supabase.auth.signInWithPassword({
-            email,
+            email: normalizedEmail,
             password,
           });
           if (signInError) {
             setError(signInError.message);
           } else {
+            setMessage("Successfully signed in.");
             router.replace(redirectTo);
           }
         } else {
           const supabase = getSupabaseClient();
           const { error: signUpError } = await supabase.auth.signUp({
-            email,
+            email: normalizedEmail,
             password,
+            options: {
+              emailRedirectTo:
+                typeof window !== "undefined" ? `${window.location.origin}/login` : undefined,
+            },
           });
           if (signUpError) {
             setError(signUpError.message);
           } else {
-            setMessage("Account created. You can now sign in.");
+            // Create a starter team profile row for the new team leader
+            const { data: user } = await supabase.auth.getUser();
+            if (user.user) {
+              await fetch("/api/team-profile/init", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: user.user.id, email: normalizedEmail }),
+              }).catch(() => undefined);
+            }
+            setMessage("Successfully created account. Please sign in.");
             setMode("sign-in");
           }
         }
@@ -59,7 +75,8 @@ function LoginForm() {
 
   return (
     <main className="min-h-screen px-6 py-24 max-w-md mx-auto">
-      <div className="rounded-2xl border border-white/10 bg-black/60 backdrop-blur-md p-6 shadow-[0_0_25px_rgba(0,246,255,0.2)]">
+      <ElectricBorder color="#22d3ee" thickness={2} className="rounded-2xl">
+      <div className="rounded-2xl bg-black/60 backdrop-blur-md p-6">
         <header className="mb-6 text-center">
           <h1 className="text-2xl font-semibold text-white">
             {mode === "sign-in" ? "Sign in" : "Create an account"}
@@ -159,6 +176,7 @@ function LoginForm() {
           )}
         </div>
       </div>
+      </ElectricBorder>
     </main>
   );
 }

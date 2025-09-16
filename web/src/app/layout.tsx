@@ -30,7 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        <div className="fixed inset-0 z-0" aria-hidden>
+        <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden>
           <Galaxy transparent />
         </div>
         {children}

@@ -83,19 +83,12 @@ export function Header() {
           Contact
         </Link>
 
-        <button
+        <Link
+          href="/profile"
           className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]"
-          onClick={(e) => {
-            e.preventDefault();
-            if (!isAuthenticated) {
-              router.push("/login?redirect=/admin");
-              return;
-            }
-            router.push("/admin");
-          }}
         >
-          Admin
-        </button>
+          Team Profile
+        </Link>
 
         <div className="ml-2 pl-4 border-l border-white/10 flex items-center gap-3">
           {isLoading ? null : isAuthenticated ? (

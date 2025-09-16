@@ -9,31 +9,42 @@ export function ResourcesSection({ links }: ResourcesSectionProps) {
   const hasLinks = Array.isArray(links) && links.length > 0;
 
   return (
-    <section aria-labelledby="resources-heading" className="space-y-4">
-      <h2 id="resources-heading" className="text-2xl font-semibold">
+    <aside
+      className="w-[1000px] min-h-[250px] flex flex-col gap-4 px-6 py-6
+        bg-black/70 border border-white/10 rounded-2xl
+        shadow-[0_0_20px_rgba(0,0,0,0.6)] mr-8
+        backdrop-blur-md"
+      style={{ alignItems: "flex-start" }}
+      aria-labelledby="resources-heading"
+    >
+      <h1
+        id="resources-heading"
+        className="text-xl font-bold text-cyan-400 mb-4 text-left"
+      >
         Resources
-      </h2>
+      </h1>
       {!hasLinks ? (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-white/70 text-left">
           Links to guides, FAQs, and docs will appear here.
         </p>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2">
+        <ul className="grid gap-8 sm:grid-cols-2 w-full">
           {links!.map((link) => (
             <li
               key={link.id}
-              className="rounded-md border border-gray-200 dark:border-white/10 p-4"
+              className="rounded-xl border border-white/10 p-6 bg-black/30
+                transition-all hover:shadow-lg"
             >
               <a
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium underline underline-offset-4 hover:no-underline"
+                className="font-semibold text-cyan-300 underline underline-offset-4 hover:text-cyan-400 hover:no-underline transition"
               >
                 {link.label}
               </a>
               {link.description ? (
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                <p className="mt-2 text-base text-white/80 break-words">
                   {link.description}
                 </p>
               ) : null}
@@ -41,10 +52,8 @@ export function ResourcesSection({ links }: ResourcesSectionProps) {
           ))}
         </ul>
       )}
-    </section>
+    </aside>
   );
 }
 
 export default ResourcesSection;
-
-

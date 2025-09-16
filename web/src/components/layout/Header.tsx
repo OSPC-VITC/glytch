@@ -12,7 +12,7 @@ export function Header() {
           href="/"
           className="text-cyan-400 font-semibold text-lg transition-all hover:drop-shadow-[0_0_8px_cyan]"
         >
-          Event Details
+          Event
         </Link>
         <Link
           href="/#timeline"

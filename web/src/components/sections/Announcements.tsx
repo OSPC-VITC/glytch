@@ -9,27 +9,37 @@ export function AnnouncementsSection({ items }: AnnouncementsSectionProps) {
   const hasItems = Array.isArray(items) && items.length > 0;
 
   return (
-    <section aria-labelledby="announcements-heading" className="space-y-4">
-      <h2 id="announcements-heading" className="text-2xl font-semibold">
+    <aside
+      className="w-[1000px] min-h-[250px] flex flex-col gap-4 px-6 py-6
+        bg-black/70 border border-white/10 rounded-2xl
+        shadow-[0_0_20px_rgba(0,0,0,0.6)] mr-8
+        backdrop-blur-md"
+      style={{ alignItems: "flex-start" }}
+      aria-labelledby="announcements-heading"
+    >
+      <h1
+        id="announcements-heading"
+        className="text-xl font-bold text-cyan-400 mb-4 text-left"
+      >
         Announcements
-      </h2>
+      </h1>
       {!hasItems ? (
-        <p className="text-sm text-gray-500">No announcements yet.</p>
+        <p className="text-sm text-white/70 text-left">No announcements yet.</p>
       ) : (
-        <ul className="divide-y divide-gray-200 dark:divide-white/10 rounded-md border border-gray-200 dark:border-white/10">
+        <ul className="divide-y divide-white/10 w-full">
           {items!.map((announcement) => (
-            <li key={announcement.id} className="p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-medium">{announcement.title}</h3>
+            <li key={announcement.id} className="py-5">
+              <div className="flex items-center justify-between w-full">
+                <h3 className="text-cyan-300 font-semibold text-left">{announcement.title}</h3>
                 <time
                   dateTime={announcement.publishedAt}
-                  className="text-xs text-gray-500"
+                  className="text-xs text-white/70 ml-4"
                 >
                   {new Date(announcement.publishedAt).toLocaleDateString()}
                 </time>
               </div>
               {announcement.content ? (
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                <p className="mt-2 text-base text-white/80 text-left break-words">
                   {announcement.content}
                 </p>
               ) : null}
@@ -37,10 +47,8 @@ export function AnnouncementsSection({ items }: AnnouncementsSectionProps) {
           ))}
         </ul>
       )}
-    </section>
+    </aside>
   );
 }
 
 export default AnnouncementsSection;
-
-

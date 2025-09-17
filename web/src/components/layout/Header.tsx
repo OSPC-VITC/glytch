@@ -65,12 +65,6 @@ export function Header() {
           Rules & Judging Criteria
         </Link>
         <Link
-          href="/#announcements"
-          className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]"
-        >
-          Announcements
-        </Link>
-        <Link
           href="/#resources"
           className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]"
         >

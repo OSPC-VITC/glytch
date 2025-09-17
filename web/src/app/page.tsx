@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnnouncementsSection } from "@/components/sections/Announcements";
 import { ResourcesSection } from "@/components/sections/Resources";
 import { ContactSection } from "@/components/sections/Contact";
 import { RulesSection } from "@/components/sections/Rules";
@@ -102,10 +101,6 @@ export default function Home() {
 
         <div id="rules" className="scroll-mt-24">
           <RulesSection />
-        </div>
-
-        <div id="announcements" className="scroll-mt-24">
-          <AnnouncementsSection />
         </div>
 
         <div id="resources" className="scroll-mt-24">

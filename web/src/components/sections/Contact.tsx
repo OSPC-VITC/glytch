@@ -1,17 +1,22 @@
 import React from "react";
-import { appConfig } from "@/lib/config";
 
 export function ContactSection() {
-  const { discordUrl, whatsappUrl, email } = appConfig.contact;
-  const hasAny = Boolean(discordUrl || whatsappUrl || email);
+  const coordinator1 = "7806842994";
+  const coordinator2 = "8610721331";
+  const instagramId = "ospc_vitc";
+
+  const callIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="inline mr-2" viewBox="0 0 16 16">
+      <path d="M3.654 1.328a.678.678 0 0 1 1.015-.063l2.29 2.29c.329.329.445.817.3 1.254l-.517 1.55a.678.678 0 0 1-.746.478l-1.122-.187a11.292 11.292 0 0 0 5.516 5.516l-.187-1.122a.678.678 0 0 1 .478-.746l1.55-.517a.678.678 0 0 1 1.254.3l2.29 2.29a.678.678 0 0 1-.063 1.015l-2.424 1.924a1.745 1.745 0 0 1-1.95.175C6.062 13.21 2.79 9.938 1.601 6.449a1.745 1.745 0 0 1 .175-1.95L3.654 1.328z"/>
+    </svg>
+  );
 
   return (
     <aside
-      className="w-[1000px] min-h-[250px] flex flex-col gap-4 px-6 py-6
+      className="w-[1000px] min-h-[250px] flex flex-col gap-6 px-6 py-6
       bg-black/70 border border-white/10 rounded-2xl
       shadow-[0_0_20px_rgba(0,0,0,0.6)] mr-8
       backdrop-blur-md"
-      style={{ alignItems: "flex-start" }}
       aria-labelledby="contact-heading"
     >
       <h1
@@ -20,48 +25,20 @@ export function ContactSection() {
       >
         Contact
       </h1>
-      {!hasAny ? (
-        <p className="text-sm text-white/70 text-left">
-          Contact channels will be added soon.
-        </p>
-      ) : (
-        <ul className="flex flex-wrap gap-6">
-          {discordUrl ? (
-            <li>
-              <a
-                className="inline-flex items-center rounded-md border border-white/10 px-4 py-3 text-cyan-300 bg-black/30 hover:bg-cyan-700 hover:text-white transition"
-                href={discordUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Discord
-              </a>
-            </li>
-          ) : null}
-          {whatsappUrl ? (
-            <li>
-              <a
-                className="inline-flex items-center rounded-md border border-white/10 px-4 py-3 text-cyan-300 bg-black/30 hover:bg-cyan-700 hover:text-white transition"
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                WhatsApp
-              </a>
-            </li>
-          ) : null}
-          {email ? (
-            <li>
-              <a
-                className="inline-flex items-center rounded-md border border-white/10 px-4 py-3 text-cyan-300 bg-black/30 hover:bg-cyan-700 hover:text-white transition"
-                href={`mailto:${email}`}
-              >
-                {email}
-              </a>
-            </li>
-          ) : null}
-        </ul>
-      )}
+      <div className="flex w-full gap-8">
+        <div className="flex-1 bg-black/30 border border-white/10 rounded-xl shadow-[0_0_10px_rgba(0,0,0,0.4)] px-8 py-10 flex flex-col justify-center">
+          <h2 className="text-lg font-semibold text-cyan-300 mb-2">SHOURYA</h2>
+          <p className="text-xl text-white/80">{callIcon}{coordinator1}</p>
+        </div>
+        <div className="flex-1 bg-black/30 border border-white/10 rounded-xl shadow-[0_0_10px_rgba(0,0,0,0.4)] px-8 py-10 flex flex-col justify-center">
+          <h2 className="text-lg font-semibold text-cyan-300 mb-2">ROHITH</h2>
+          <p className="text-xl text-white/80">{callIcon}{coordinator2}</p>
+        </div>
+        <div className="flex-1 bg-black/30 border border-white/10 rounded-xl shadow-[0_0_10px_rgba(0,0,0,0.4)] px-8 py-10 flex flex-col justify-center">
+          <h2 className="text-lg font-semibold text-cyan-300 mb-2">INSTAGRAM ID :</h2>
+          <p className="text-xl text-white/80">@ {instagramId}</p>
+        </div>
+      </div>
     </aside>
   );
 }

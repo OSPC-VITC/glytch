@@ -1,4 +1,5 @@
 import React from "react";
+import { CurvedPanel } from "@/components/ui/CurvedPanel";
 
 export function ContactSection() {
   const coordinator1 = "7806842994";
@@ -12,7 +13,9 @@ export function ContactSection() {
   );
 
   return (
-    <aside
+    <CurvedPanel
+      as="aside"
+      curvature={0.2}
       className="w-[1000px] min-h-[250px] flex flex-col gap-6 px-6 py-6
       bg-black/70 border border-white/10 rounded-2xl
       shadow-[0_0_20px_rgba(0,0,0,0.6)] mr-8
@@ -39,7 +42,7 @@ export function ContactSection() {
           <p className="text-xl text-white/80">@ {instagramId}</p>
         </div>
       </div>
-    </aside>
+    </CurvedPanel>
   );
 }
 

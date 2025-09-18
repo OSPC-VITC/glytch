@@ -154,24 +154,26 @@ export default function AdminPage() {
 
   if (!isAuthed) {
     return (
-      <main className="min-h-screen px-6 py-24 max-w-sm mx-auto">
-        <ElectricBorder color="#22d3ee" thickness={2} className="rounded-2xl">
-          <div className="rounded-2xl bg-black/50 backdrop-blur-md p-6 text-white">
-            <h1 className="text-2xl font-semibold mb-4">Admin Login</h1>
-            {loginError ? <div className="mb-3 text-sm text-red-400">{loginError}</div> : null}
-            <form onSubmit={onLogin} className="space-y-3">
-              <div>
-                <label className="text-sm text-gray-300">Username</label>
-                <input className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" value={username} onChange={e => setUsername(e.target.value)} placeholder="admin2025" />
-              </div>
-              <div>
-                <label className="text-sm text-gray-300">Password</label>
-                <input type="password" className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" />
-              </div>
-              <button type="submit" className="w-full rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-medium px-4 py-2">Sign in</button>
-            </form>
-          </div>
-        </ElectricBorder>
+      <main className="min-h-screen w-full px-6 py-8 flex items-center justify-center">
+        <div className="w-full max-w-sm">
+          <ElectricBorder color="#22d3ee" thickness={2} className="rounded-2xl w-full">
+            <div className="rounded-2xl bg-black/50 backdrop-blur-md p-6 text-white">
+              <h1 className="text-2xl font-semibold mb-4">Admin Login</h1>
+              {loginError ? <div className="mb-3 text-sm text-red-400">{loginError}</div> : null}
+              <form onSubmit={onLogin} className="space-y-3">
+                <div>
+                  <label className="text-sm text-gray-300">Username</label>
+                  <input className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" value={username} onChange={e => setUsername(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-300">Password</label>
+                  <input type="password" className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" />
+                </div>
+                <button type="submit" className="w-full rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-medium px-4 py-2">Sign in</button>
+              </form>
+            </div>
+          </ElectricBorder>
+        </div>
       </main>
     );
   }

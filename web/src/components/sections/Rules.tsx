@@ -1,4 +1,5 @@
 import React from "react";
+import { CurvedPanel } from "@/components/ui/CurvedPanel";
 
 type Rule = {
   id: string;
@@ -14,7 +15,9 @@ export function RulesSection({ rules }: RulesSectionProps) {
   const hasRules = Array.isArray(rules) && rules.length > 0;
 
   return (
-    <aside
+    <CurvedPanel
+      as="aside"
+      curvature={0.2}
       className="w-[1000px] min-h-[250px] flex flex-col gap-6 px-6 py-8
       bg-black/70 border border-white/10 rounded-2xl
       shadow-[0_0_20px_rgba(0,0,0,0.6)] mr-8
@@ -47,7 +50,7 @@ export function RulesSection({ rules }: RulesSectionProps) {
           ))}
         </ul>
       )}
-    </aside>
+    </CurvedPanel>
   );
 }
 

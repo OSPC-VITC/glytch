@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { CurvedPanel } from "@/components/ui/CurvedPanel";
 
 type TimelineEvent = {
   id: string;
@@ -46,7 +47,9 @@ export function Timeline({ events }: TimelineProps) {
   };
 
   return (
-    <aside
+    <CurvedPanel
+      as="aside"
+      curvature={0.2}
       className="w-full min-h-[200px] flex flex-col gap-6 px-6 py-6
                  bg-black/70 border border-white/10 rounded-2xl
                  shadow-[0_0_20px_rgba(0,0,0,0.6)] backdrop-blur-md"
@@ -100,7 +103,7 @@ export function Timeline({ events }: TimelineProps) {
           );
         })}
       </div>
-    </aside>
+    </CurvedPanel>
   );
 }
 

@@ -1,5 +1,6 @@
 import React from "react";
 import type { ResourceLink } from "@/types";
+import { CurvedPanel } from "@/components/ui/CurvedPanel";
 
 type ResourcesSectionProps = {
   links?: ResourceLink[];
@@ -9,7 +10,9 @@ export function ResourcesSection({ links }: ResourcesSectionProps) {
   const hasLinks = Array.isArray(links) && links.length > 0;
 
   return (
-    <aside
+    <CurvedPanel
+      as="aside"
+      curvature={0.2}
       className="w-[1000px] min-h-[250px] flex flex-col gap-4 px-6 py-6
         bg-black/70 border border-white/10 rounded-2xl
         shadow-[0_0_20px_rgba(0,0,0,0.6)] mr-8
@@ -52,7 +55,7 @@ export function ResourcesSection({ links }: ResourcesSectionProps) {
           ))}
         </ul>
       )}
-    </aside>
+    </CurvedPanel>
   );
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
@@ -10,6 +10,7 @@ export function Header() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -39,13 +40,62 @@ export function Header() {
     };
   }, []);
 
+  // Subtle follow-the-cursor motion for glass nav
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const max = 6;
+      const tx = ((x - cx) / cx) * max;
+      const ty = ((y - cy) / cy) * max;
+      el.style.transform = `translate(${tx}px, ${ty}px)`;
+    };
+    const handleLeave = () => {
+      el.style.transform = "";
+    };
+
+    el.addEventListener("mousemove", handleMouseMove);
+    el.addEventListener("mouseleave", handleLeave);
+    return () => {
+      el.removeEventListener("mousemove", handleMouseMove);
+      el.removeEventListener("mouseleave", handleLeave);
+    };
+  }, []);
+
   return (
     <header className="fixed top-6 inset-x-0 z-50 flex justify-center">
       <nav
-        className="flex items-center gap-8 px-8 py-3 rounded-full
-          bg-black/70 backdrop-blur-md border border-white/10
-          shadow-[0_0_20px_rgba(0,0,0,0.6)]"
+        ref={navRef}
+        className="relative flex items-center gap-8 px-8 py-3 rounded-full
+          bg-[rgba(11,11,15,0.55)] backdrop-blur-md backdrop-saturate-150
+          border border-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.38)]"
       >
+        {/* Glass overlays */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-full"
+          style={{
+            boxShadow:
+              "inset 0 0 0 1px rgba(255,255,255,0.06), 0 0 0 1px rgba(255,255,255,0.04)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-full opacity-40"
+          style={{
+            background:
+              "radial-gradient(120% 140% at 50% 0%, rgba(34,211,238,0.22) 0%, rgba(34,211,238,0.08) 35%, transparent 60%)",
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
+          }}
+        />
+
         <Link
           href="/"
           className="text-cyan-400 font-semibold text-lg transition-all hover:drop-shadow-[0_0_8px_cyan]"

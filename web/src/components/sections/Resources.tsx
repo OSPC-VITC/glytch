@@ -22,7 +22,7 @@ export function ResourcesSection({ links }: ResourcesSectionProps) {
     >
       <h1
         id="resources-heading"
-        className="text-xl font-bold text-cyan-400 mb-4 text-left"
+        className="text-3xl font-bold text-cyan-400 mb-4 text-left"
       >
         Resources
       </h1>

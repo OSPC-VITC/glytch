@@ -63,33 +63,53 @@ export default function Home() {
       <div
         className="absolute top-[65%] left-1/2 -translate-x-1/2 
            w-fit px-6 md:px-10 py-4 rounded-2xl
-           bg-black/80 backdrop-blur-md border border-white/10
-           shadow-[0_0_25px_#00f6ff] flex items-center justify-center gap-6 md:gap-12
-           text-white z-20 whitespace-nowrap"
+           bg-black/60 backdrop-blur-md backdrop-saturate-150 border-2 border-cyan-400/40
+           shadow-[0_0_30px_#22d3ee] z-20"
       >
-        <div className="text-xs md:text-sm lg:text-lg font-medium text-white/90 truncate max-w-[180px] md:max-w-none">
-          Venue: <span className="text-cyan-400">Kamaraj Auditorium</span>
-        </div>
-        <div className="flex space-x-4 md:space-x-6 text-center font-mono shrink-0">
-          <div>
-            <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.days}</p>
-            <span className="text-[10px] md:text-xs text-gray-300">DAYS</span>
+        {/* overlays */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-2xl opacity-40"
+          style={{
+            background:
+              "radial-gradient(120% 140% at 50% 0%, rgba(34,211,238,0.22) 0%, rgba(34,211,238,0.08) 35%, transparent 60%)",
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-2xl"
+          style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" }}
+        />
+
+        <div className="relative z-10 flex items-center justify-center gap-6 md:gap-12 text-white whitespace-nowrap">
+          <div className="text-xs md:text-sm lg:text-lg font-medium text-white/90 truncate max-w-[180px] md:max-w-none">
+            Venue: <span className="text-cyan-400">Kamaraj Auditorium</span>
           </div>
-          <div>
-            <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.hours}</p>
-            <span className="text-[10px] md:text-xs text-gray-300">HRS</span>
+          <div className="flex space-x-4 md:space-x-6 text-center font-mono shrink-0">
+            <div>
+              <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.days}</p>
+              <span className="text-[10px] md:text-xs text-gray-300">DAYS</span>
+            </div>
+            <div>
+              <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.hours}</p>
+              <span className="text-[10px] md:text-xs text-gray-300">HRS</span>
+            </div>
+            <div>
+              <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.minutes}</p>
+              <span className="text-[10px] md:text-xs text-gray-300">MIN</span>
+            </div>
+            <div>
+              <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.seconds}</p>
+              <span className="text-[10px] md:text-xs text-gray-300">SEC</span>
+            </div>
           </div>
-          <div>
-            <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.minutes}</p>
-            <span className="text-[10px] md:text-xs text-gray-300">MIN</span>
+          <div className="text-xs md:text-sm lg:text-lg font-medium text-white/90 shrink-0">
+            Date: <span className="text-cyan-400">24 Sep 2025</span>
           </div>
-          <div>
-            <p className="text-lg md:text-2xl font-bold text-cyan-400">{timeLeft.seconds}</p>
-            <span className="text-[10px] md:text-xs text-gray-300">SEC</span>
-          </div>
-        </div>
-        <div className="text-xs md:text-sm lg:text-lg font-medium text-white/90 shrink-0">
-          Date: <span className="text-cyan-400">24 Sep 2025</span>
         </div>
       </div>
 

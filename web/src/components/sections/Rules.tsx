@@ -63,12 +63,11 @@ export function RulesSection({ rules }: RulesSectionProps) {
     >
       <h1
         id="rules-heading"
-        className="text-3xl font-bold text-cyan-400 mb-2"
-        style={{ textAlign: "left" }}
+        className="text-3xl font-bold text-cyan-400 mb-2 text-center w-full"
       >
         Rules and Judging Criteria
       </h1>
-      <p className="text-sm text-white/70 mb-4">Each criterion is scored out of 10.</p>
+      <p className="text-sm text-white/70 mb-4 text-center w-full">Each criterion is scored out of 10.</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
         {items.map((rule) => {

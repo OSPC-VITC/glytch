@@ -68,7 +68,18 @@ export default function TeamLeaderProfilePage() {
       <div className="w-full max-w-2xl">
         <ElectricBorder color="#22d3ee" thickness={2} className="rounded-2xl w-full">
           <div className="rounded-2xl bg-black/50 backdrop-blur-md p-6 text-white">
-          <h1 className="text-2xl font-semibold mb-4">Team Profile</h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-semibold">Team Profile</h1>
+            <button
+              onClick={async () => {
+                await fetch("/api/team/logout", { method: "POST" });
+                router.replace("/login");
+              }}
+              className="text-sm text-black bg-cyan-400 hover:bg-cyan-300 rounded-md px-3 py-1 font-medium"
+            >
+              Logout
+            </button>
+          </div>
           {error ? <div className="mb-3 text-sm text-red-400">{error}</div> : null}
           {saveMsg ? <div className="mb-3 text-sm text-green-400">{saveMsg}</div> : null}
           <div className="space-y-4">

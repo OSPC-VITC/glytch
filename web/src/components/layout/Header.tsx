@@ -100,7 +100,7 @@ export function Header() {
           href="/"
           className="text-cyan-400 font-semibold text-lg transition-all hover:drop-shadow-[0_0_8px_cyan]"
         >
-          Event
+          Home
         </Link>
         <Link
           href="/#timeline"
@@ -137,7 +137,7 @@ export function Header() {
         <div className="ml-2 pl-4 border-l border-white/10 flex items-center gap-3">
           {isLoading ? null : isAuthenticated ? (
             <button
-              className="text-sm text-white/80 hover:text-red-300"
+              className="text-sm text-black bg-cyan-400 hover:bg-cyan-300 rounded-md px-3 py-1 font-medium"
               onClick={async () => {
                 const supabase = getSupabaseClient();
                 await supabase.auth.signOut();

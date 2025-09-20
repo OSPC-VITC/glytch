@@ -39,7 +39,7 @@ export function ContactSection() {
     >
       <h1
         id="contact-heading"
-        className="text-3xl font-bold text-cyan-400 mb-6 text-left tracking-wide"
+        className="text-3xl font-bold text-cyan-400 mb-6 text-center tracking-wide"
       >
         Contact
       </h1>

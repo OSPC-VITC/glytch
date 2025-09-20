@@ -22,12 +22,12 @@ export function ResourcesSection({ links }: ResourcesSectionProps) {
     >
       <h1
         id="resources-heading"
-        className="text-3xl font-bold text-cyan-400 mb-4 text-left"
+        className="text-3xl font-bold text-cyan-400 mb-2 text-center w-full"
       >
         Resources
       </h1>
       {!hasLinks ? (
-        <p className="text-sm text-white/70 text-left">
+        <p className="text-sm text-white/70 text-center w-full">
           Links to guides, FAQs, and docs will appear here.
         </p>
       ) : (

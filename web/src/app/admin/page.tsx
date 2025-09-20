@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ElectricBorder from "@/components/ui/ElectricBorder";
+import { Eye, EyeOff, Search } from "lucide-react";
 
 type Team = {
   id: string;
@@ -25,12 +26,14 @@ export default function AdminPage() {
   const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
 
   const [teams, setTeams] = useState<Team[]>([]);
   const [gradesByTeam, setGradesByTeam] = useState<Record<string, Grade>>({});
   const [loading, setLoading] = useState(false);
   const [savingTeamId, setSavingTeamId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -146,6 +149,17 @@ export default function AdminPage() {
     }
   };
 
+  const filteredTeams = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return teams;
+    return teams.filter(t =>
+      (t.team_name || "").toLowerCase().includes(q) ||
+      t.id.toLowerCase().includes(q) ||
+      (t.github_url || "").toLowerCase().includes(q) ||
+      (t.deployment_url || "").toLowerCase().includes(q)
+    );
+  }, [teams, searchQuery]);
+
   if (isAuthed === null) {
     return (
       <main className="min-h-screen px-6 py-24 max-w-2xl mx-auto text-white">Loading…</main>
@@ -165,9 +179,23 @@ export default function AdminPage() {
                   <label className="text-sm text-gray-300">Username</label>
                   <input className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" value={username} onChange={e => setUsername(e.target.value)} />
                 </div>
-                <div>
+                <div className="relative">
                   <label className="text-sm text-gray-300">Password</label>
-                  <input type="password" className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-white outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" />
+                  <input
+                    type={showAdminPassword ? "text" : "password"}
+                    className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 pr-12 text-white outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    aria-label={showAdminPassword ? "Hide password" : "Show password"}
+                    className="absolute right-2 top-1/2 translate-y-[4px] -mt-3 text-white/70 hover:text-white flex items-center justify-center h-8 w-8"
+                    onClick={() => setShowAdminPassword(v => !v)}
+                  >
+                    {showAdminPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
                 <button type="submit" className="w-full rounded-md bg-cyan-500 hover:bg-cyan-400 text-black font-medium px-4 py-2">Sign in</button>
               </form>
@@ -188,11 +216,54 @@ export default function AdminPage() {
         <button onClick={onLogout} className="rounded-md bg-white/10 hover:bg-white/20 text-white px-3 py-1.5">Logout</button>
       </header>
 
+      <div className="flex items-center justify-center gap-3">
+        <div className="relative w-full md:w-96">
+          <input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search teams (name, id, GitHub, deploy)"
+            className="w-full rounded-md bg-black/40 border-2 border-cyan-400/70 shadow-[0_0_18px_#22d3ee] px-9 py-2 text-white outline-none focus:ring-2 focus:ring-cyan-300 focus:border-cyan-300"
+          />
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-cyan-200" size={18} />
+          {searchQuery ? (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-cyan-200 hover:text-white text-sm"
+            >
+              Clear
+            </button>
+          ) : null}
+        </div>
+        <div className="hidden md:flex items-center gap-2">
+          <label className="text-sm text-white/70">Sort</label>
+          <button
+            type="button"
+            className="rounded-md bg-white/10 hover:bg-white/20 text-white px-3 py-1.5"
+            onClick={() => {
+              setTeams(prev => {
+                const cloned = [...prev];
+                cloned.sort((a, b) => {
+                  const ga = gradesByTeam[a.id];
+                  const gb = gradesByTeam[b.id];
+                  const ta = (ga?.visual_aesthetics ?? 0) + (ga?.interactivity ?? 0) + (ga?.ui_navigation ?? 0) + (ga?.creativity ?? 0) + (ga?.performance ?? 0);
+                  const tb = (gb?.visual_aesthetics ?? 0) + (gb?.interactivity ?? 0) + (gb?.ui_navigation ?? 0) + (gb?.creativity ?? 0) + (gb?.performance ?? 0);
+                  return tb - ta; // desc
+                });
+                return cloned;
+              });
+            }}
+          >
+            by Total Score
+          </button>
+        </div>
+      </div>
+
       {loading ? (
         <div className="text-white">Loading teams…</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {teams.map(team => {
+          {filteredTeams.map(team => {
             const g = gradesByTeam[team.id] ?? {
               team_id: team.id,
               visual_aesthetics: 0,

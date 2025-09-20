@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ResourcesSection } from "@/components/sections/Resources";
-import { ContactSection } from "@/components/sections/Contact";
-import { RulesSection } from "@/components/sections/Rules";
-import { Timeline } from "@/components/sections/Timeline";
+import { Suspense, lazy, useEffect, useState } from "react";
 import DemoOne from "@/components/ui/demo-one";
+import Loader from "@/components/ui/Loader";
+
+const Resources = lazy(() => import("@/components/sections/Resources").then(m => ({ default: m.ResourcesSection })));
+const Contact = lazy(() => import("@/components/sections/Contact").then(m => ({ default: m.ContactSection })));
+const Rules = lazy(() => import("@/components/sections/Rules").then(m => ({ default: m.RulesSection })));
+const Timeline = lazy(() => import("@/components/sections/Timeline").then(m => ({ default: m.Timeline })));
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({
@@ -43,7 +45,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // 🎯 Define your timeline events here
   const events = [
     { id: "1", title: "Check In", start: "08:00", end: "09:00" },
     { id: "2", title: "Welcome", start: "09:00", end: "09:30" },
@@ -56,17 +57,15 @@ export default function Home() {
 
   return (
     <>
-      {/* Hero Background */}
       <DemoOne />
 
-      {/* Countdown floating inside hero */}
+      {/* Countdown */}
       <div
         className="absolute top-[65%] left-1/2 -translate-x-1/2 
            w-fit px-6 md:px-10 py-4 rounded-2xl
            bg-black/60 backdrop-blur-md backdrop-saturate-150 border-2 border-cyan-400/40
            shadow-[0_0_30px_#22d3ee] z-20"
       >
-        {/* overlays */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-2xl opacity-40"
@@ -113,22 +112,30 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Event Portal (comes after hero) */}
+      {/* Event Portal */}
       <main className="px-2 py-40 max-w-5xl mx-auto space-y-16 bg-transparent">
         <div id="timeline" className="scroll-mt-24">
-          <Timeline events={events} />
+          <Suspense fallback={<Loader size={24} />}>
+            <Timeline events={events} />
+          </Suspense>
         </div>
 
         <div id="rules" className="scroll-mt-24">
-          <RulesSection />
+          <Suspense fallback={<Loader size={24} />}>
+            <Rules />
+          </Suspense>
         </div>
 
         <div id="resources" className="scroll-mt-24">
-          <ResourcesSection />
+          <Suspense fallback={<Loader size={24} />}>
+            <Resources />
+          </Suspense>
         </div>
 
         <div id="contact" className="scroll-mt-24">
-          <ContactSection />
+          <Suspense fallback={<Loader size={24} />}>
+            <Contact />
+          </Suspense>
         </div>
       </main>
     </>

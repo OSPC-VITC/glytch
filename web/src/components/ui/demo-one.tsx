@@ -5,17 +5,6 @@ import * as THREE from "three";
 import { motion, useScroll, useTransform } from "framer-motion";
 import FuzzyText from "@/components/ui/fuzzy-text";
 
-function canUseWebGL(): boolean {
-  try {
-    const canvas = document.createElement("canvas");
-    return !!(
-      canvas.getContext("webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
-    );
-  } catch {
-    return false;
-  }
-}
-
 export function ShaderAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<{
@@ -31,7 +20,6 @@ export function ShaderAnimation() {
 
   useEffect(() => {
     if (!containerRef.current) return;
-    if (!canUseWebGL()) return;
 
     const container = containerRef.current;
 
@@ -60,6 +48,7 @@ export function ShaderAnimation() {
           intensity += lineWidth*float(i*i) / abs(fract(t + float(i)*0.01)*5.0 - length(uv) + mod(uv.x+uv.y, 0.2));
         }
         color = vec3(0.2, 0.6, 1.0) * intensity;
+        
         gl_FragColor = vec4(color[0],color[1],color[2],1.0);
       }
     `;
@@ -77,34 +66,24 @@ export function ShaderAnimation() {
 
     const material = new THREE.ShaderMaterial({
       uniforms: uniforms as unknown as Record<string, THREE.IUniform>,
-      vertexShader,
-      fragmentShader,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
     });
 
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    let renderer: THREE.WebGLRenderer | null = null;
-    try {
-      renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance", preserveDrawingBuffer: false, failIfMajorPerformanceCaveat: true });
-    } catch {
-      return; // fail gracefully
-    }
-    if (!renderer) return;
-
-    // Prevent context-lost default reload behavior
-    renderer.domElement.addEventListener("webglcontextlost", (e) => {
-      e.preventDefault();
-    });
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
 
     container.appendChild(renderer.domElement);
 
     const onWindowResize = () => {
-      const width = Math.max(1, container.clientWidth);
-      const height = Math.max(1, container.clientHeight);
-      renderer!.setSize(width, height, false);
-      uniforms.resolution.value.x = renderer!.domElement.width;
-      uniforms.resolution.value.y = renderer!.domElement.height;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      renderer.setSize(width, height);
+      uniforms.resolution.value.x = renderer.domElement.width;
+      uniforms.resolution.value.y = renderer.domElement.height;
     };
 
     onWindowResize();
@@ -113,22 +92,37 @@ export function ShaderAnimation() {
     const animate = () => {
       const animationId = requestAnimationFrame(animate);
       uniforms.time.value += 0.05;
-      renderer!.render(scene, camera);
-      if (sceneRef.current) sceneRef.current.animationId = animationId;
+      renderer.render(scene, camera);
+
+      if (sceneRef.current) {
+        sceneRef.current.animationId = animationId;
+      }
     };
 
-    sceneRef.current = { camera, scene, renderer, uniforms, animationId: 0 };
+    sceneRef.current = {
+      camera,
+      scene,
+      renderer,
+      uniforms,
+      animationId: 0,
+    };
+
     animate();
 
     return () => {
       window.removeEventListener("resize", onWindowResize);
+
       if (sceneRef.current) {
         cancelAnimationFrame(sceneRef.current.animationId);
-        try { container.removeChild(sceneRef.current.renderer.domElement); } catch {}
+
+        if (container && sceneRef.current.renderer.domElement) {
+          try { container.removeChild(sceneRef.current.renderer.domElement); } catch {}
+        }
+
         sceneRef.current.renderer.dispose();
+        geometry.dispose();
+        material.dispose();
       }
-      geometry.dispose();
-      material.dispose();
     };
   }, []);
 

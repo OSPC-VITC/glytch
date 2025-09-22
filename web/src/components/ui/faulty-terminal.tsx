@@ -320,7 +320,14 @@ export default function FaultyTerminal({
     const ctn = containerRef.current;
     if (!ctn) return;
 
-    const renderer = new Renderer({ dpr });
+    let renderer: Renderer | null = null;
+    try {
+      renderer = new Renderer({ dpr });
+    } catch {
+      return; // gracefully skip when WebGL cannot initialize
+    }
+    if (!renderer) return;
+
     rendererRef.current = renderer;
     const gl: OGLRenderingContext = renderer.gl;
     gl.clearColor(0, 0, 0, 1);
@@ -329,9 +336,7 @@ export default function FaultyTerminal({
 
     const uniforms: FaultyUniforms = {
       iTime: { value: 0 },
-      iResolution: {
-        value: new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height),
-      },
+      iResolution: { value: new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height) },
       uScale: { value: scale },
       uGridMul: { value: new Float32Array(gridMul) },
       uDigitSize: { value: digitSize },
@@ -351,23 +356,21 @@ export default function FaultyTerminal({
       uBrightness: { value: brightness },
     };
 
-    const program = new Program(gl, {
-      vertex: vertexShader,
-      fragment: fragmentShader,
-      uniforms,
-    });
-    programRef.current = program;
+    let program: Program | null = null;
+    try {
+      program = new Program(gl, { vertex: vertexShader, fragment: fragmentShader, uniforms: uniforms as unknown as Record<string, { value: unknown }> });
+    } catch {
+      return; // shader compile issues or context problems
+    }
+    if (!program) return;
 
+    programRef.current = program;
     const mesh = new Mesh(gl, { geometry, program });
 
     function resize() {
       if (!ctn || !renderer) return;
       renderer.setSize(ctn.offsetWidth, ctn.offsetHeight);
-      uniforms.iResolution.value = new Color(
-        gl.canvas.width,
-        gl.canvas.height,
-        gl.canvas.width / gl.canvas.height
-      );
+      uniforms.iResolution.value = new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height);
     }
 
     const resizeObserver = new ResizeObserver(() => resize());
@@ -376,11 +379,7 @@ export default function FaultyTerminal({
 
     const update = (t: number) => {
       rafRef.current = requestAnimationFrame(update);
-
-      if (pageLoadAnimation && loadAnimationStartRef.current === 0) {
-        loadAnimationStartRef.current = t;
-      }
-
+      if (pageLoadAnimation && loadAnimationStartRef.current === 0) loadAnimationStartRef.current = t;
       if (!pause) {
         const elapsed = (t * 0.001 + timeOffsetRef.current) * timeScale;
         uniforms.iTime.value = elapsed;
@@ -388,27 +387,22 @@ export default function FaultyTerminal({
       } else {
         uniforms.iTime.value = frozenTimeRef.current;
       }
-
       if (pageLoadAnimation && loadAnimationStartRef.current > 0) {
         const animationDuration = 2000;
-        const animationElapsed = t - loadAnimationStartRef.current;
-        const progress = Math.min(animationElapsed / animationDuration, 1);
+        const progress = Math.min((t - loadAnimationStartRef.current) / animationDuration, 1);
         uniforms.uPageLoadProgress.value = progress;
       }
-
       if (mouseReact) {
         const dampingFactor = 0.08;
         const smoothMouse = smoothMouseRef.current;
         const mouse = mouseRef.current;
         smoothMouse.x += (mouse.x - smoothMouse.x) * dampingFactor;
         smoothMouse.y += (mouse.y - smoothMouse.y) * dampingFactor;
-
         const mouseUniform = uniforms.uMouse.value as Float32Array;
         mouseUniform[0] = smoothMouse.x;
         mouseUniform[1] = smoothMouse.y;
       }
-
-      renderer.render({ scene: mesh });
+      renderer!.render({ scene: mesh });
     };
     rafRef.current = requestAnimationFrame(update);
     ctn.appendChild(gl.canvas);

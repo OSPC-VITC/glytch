@@ -3,6 +3,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Mobile-first adjustments */
+@media (max-width: 640px) {
+  .section-card { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .tl-title { font-size: 1.125rem !important; } /* 18px */
+  .tl-dot { transform: translateX(-2px); }
+  .tl-line { left: 1.125rem !important; } /* matches dot center */
+}
+
 /* Cyan loader */
 .loader {
   --s: 20px;

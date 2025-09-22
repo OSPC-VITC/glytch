@@ -54,9 +54,9 @@ export function RulesSection({ rules }: RulesSectionProps) {
     <CurvedPanel
       as="aside"
       curvature={0.2}
-      className="w-[1000px] min-h-[250px] flex flex-col gap-6 px-6 py-8
+      className="w-full lg:w-[1000px] min-h-[250px] flex flex-col gap-6 px-6 py-8
       bg-black/70 border border-white/10 rounded-2xl
-      shadow-[0_0_20px_rgba(0,0,0,0.6)] mr-8
+      shadow-[0_0_20px_rgba(0,0,0,0.6)] mr-0 lg:mr-8
       backdrop-blur-md"
       style={{ alignItems: "flex-start" }}
       aria-labelledby="rules-heading"

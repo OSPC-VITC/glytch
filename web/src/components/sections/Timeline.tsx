@@ -73,14 +73,13 @@ export function Timeline({ events }: TimelineProps) {
     <CurvedPanel
       as="aside"
       curvature={0.2}
-      className="w-full min-h-[200px] px-4 py-8 bg-black/70 border border-white/10 rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.6)] backdrop-blur-md"
+      className="section-card w-full lg:w-[1000px] min-h-[200px] px-4 py-8 bg-black/70 border border-white/10 rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.6)] backdrop-blur-md"
     >
       <div ref={containerRef} className="w-full">
-        
+        <div className="mb-6">
           <h1 className="text-2xl md:text-3xl font-bold text-cyan-400 text-center">Timeline</h1>
-          <br />
           <p className="text-xs md:text-sm text-white/70 text-center">Event schedule at a glance</p>
-       
+        </div>
 
         <div ref={contentRef} className="relative w-full pb-10">
           {data.map((item, index) => {
@@ -89,7 +88,7 @@ export function Timeline({ events }: TimelineProps) {
               <div key={index} className="flex justify-start pt-10 md:pt-16 md:gap-10">
                 {/* Left: sticky dot and title (on md+) */}
                 <div className="sticky z-10 top-40 self-start max-w-xs lg:max-w-sm md:w-full flex items-start">
-                  <div className={`h-10 w-10 aspect-square shrink-0 rounded-full border flex items-center justify-center ${
+                  <div className={`tl-dot h-10 w-10 aspect-square shrink-0 rounded-full border flex items-center justify-center ${
                     isActive
                       ? "bg-cyan-400/20 border-cyan-300/60 shadow-[0_0_18px_#22d3ee]"
                       : "bg-black/80 border-white/10"
@@ -100,7 +99,7 @@ export function Timeline({ events }: TimelineProps) {
                         : "bg-cyan-400/60 border-cyan-300/60"
                     }`} />
                   </div>
-                  <h3 className={`hidden md:block text-2xl md:text-3xl font-bold md:pl-6 ${
+                  <h3 className={`tl-title hidden md:block text-2xl md:text-3xl font-bold md:pl-6 ${
                     isActive ? "text-cyan-200 drop-shadow-[0_0_8px_#22d3ee]" : "text-white/60"
                   }`}>
                     {item.title}
@@ -136,7 +135,7 @@ export function Timeline({ events }: TimelineProps) {
           {/* Progress line */}
           <div
             style={{ height: height + "px" }}
-            className="absolute left-5 md:left-5 top-0 w-[4px] bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent via-white/70 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]"
+            className="tl-line absolute left-5 md:left-5 top-0 w-[4px] bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent via-white/70 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]"
           >
             <motion.div
               style={{ height: heightTransform, opacity: opacityTransform }}

@@ -46,13 +46,13 @@ export default function Home() {
   }, []);
 
   const events = [
-    { id: "1", title: "Check In", start: "08:00", end: "09:00" },
-    { id: "2", title: "Welcome", start: "09:00", end: "09:30" },
-    { id: "3", title: "Phase 1", start: "09:30", end: "13:20" },
+    { id: "1", title: "Check In", start: "08:00", end: "10:00" },
+    { id: "2", title: "Welcome", start: "10:00", end: "10:30" },
+    { id: "3", title: "Phase 1", start: "10:30", end: "13:20" },
     { id: "4", title: "Lunch", start: "13:20", end: "14:00" },
     { id: "5", title: "Phase 2", start: "14:00", end: "15:30" },
-    { id: "6", title: "Evaluation & Submission", start: "15:30", end: "16:30" },
-    { id: "7", title: "Winner Announcement & Closing", start: "16:30", end: "16:45" },
+    { id: "6", title: "Review 1", start: "15:30", end: "16:30" },
+    { id: "7", title: "Phase 3 and Submission", start: "16:30", end: "11:59" },
   ];
 
   return (

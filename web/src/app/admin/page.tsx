@@ -57,11 +57,13 @@ export default function AdminPage() {
         fetch("/api/judging/teams", { cache: "no-store" }),
         fetch("/api/judging/grades", { cache: "no-store" }),
       ]);
-      const tJson = (await tRes.json()) as { teams: Team[] };
-      const gJson = (await gRes.json()) as { grades: Grade[] };
-      setTeams(tJson.teams);
+      const tJson = (await tRes.json().catch(() => ({}))) as { teams?: Team[] };
+      const gJson = (await gRes.json().catch(() => ({}))) as { grades?: Grade[] };
+      const safeTeams = Array.isArray(tJson.teams) ? tJson.teams : [];
+      const safeGrades = Array.isArray(gJson.grades) ? gJson.grades : [];
+      setTeams(safeTeams);
       const map: Record<string, Grade> = {};
-      for (const g of gJson.grades) {
+      for (const g of safeGrades) {
         map[g.team_id] = g;
       }
       setGradesByTeam(map);
@@ -150,9 +152,10 @@ export default function AdminPage() {
   };
 
   const filteredTeams = useMemo(() => {
+    const list = Array.isArray(teams) ? teams : [];
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return teams;
-    return teams.filter(t =>
+    if (!q) return list;
+    return list.filter(t =>
       (t.team_name || "").toLowerCase().includes(q) ||
       t.id.toLowerCase().includes(q) ||
       (t.github_url || "").toLowerCase().includes(q) ||

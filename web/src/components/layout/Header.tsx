@@ -5,12 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import { Menu, X } from "lucide-react";
 
 export function Header() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navRef = useRef<HTMLDivElement | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -68,73 +70,35 @@ export function Header() {
     };
   }, []);
 
+  const LinkRow = (
+    <>
+      <Link href="/#timeline" className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]">Timeline</Link>
+      <Link href="/#rules" className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]">Rules & Judging Criteria</Link>
+      <Link href="/#resources" className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]">Resources</Link>
+      <Link href="/#contact" className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]">Contact</Link>
+      <Link href="/profile" className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]">Team Profile</Link>
+    </>
+  );
+
   return (
     <header className="fixed top-6 inset-x-0 z-50 flex justify-center">
       <nav
         ref={navRef}
-        className="relative flex items-center gap-8 px-8 py-3 rounded-full
+        className="relative flex items-center gap-3 md:gap-8 px-4 md:px-8 py-3 rounded-full
           bg-[rgba(11,11,15,0.55)] backdrop-blur-md backdrop-saturate-150
-          border border-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.38)]"
+          border border-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.38)] w-[calc(100%-1.5rem)] max-w-[1100px]"
       >
         {/* Glass overlays */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full"
-          style={{
-            boxShadow:
-              "inset 0 0 0 1px rgba(255,255,255,0.06), 0 0 0 1px rgba(255,255,255,0.04)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full opacity-40"
-          style={{
-            background:
-              "radial-gradient(120% 140% at 50% 0%, rgba(34,211,238,0.22) 0%, rgba(34,211,238,0.08) 35%, transparent 60%)",
-            maskImage:
-              "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
-          }}
-        />
+        <div aria-hidden className="pointer-events-none absolute inset-0 rounded-full" style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06), 0 0 0 1px rgba(255,255,255,0.04)" }} />
+        <div aria-hidden className="pointer-events-none absolute inset-0 rounded-full opacity-40" style={{ background: "radial-gradient(120% 140% at 50% 0%, rgba(34,211,238,0.22) 0%, rgba(34,211,238,0.08) 35%, transparent 60%)", maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)" }} />
 
-        <Link
-          href="/"
-          className="text-cyan-400 font-semibold text-lg transition-all hover:drop-shadow-[0_0_8px_cyan]"
-        >
-          Home
-        </Link>
-        <Link
-          href="/#timeline"
-          className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]"
-        >
-          Timeline
-        </Link>
-        <Link
-          href="/#rules"
-          className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]"
-        >
-          Rules & Judging Criteria
-        </Link>
-        <Link
-          href="/#resources"
-          className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]"
-        >
-          Resources
-        </Link>
-        <Link
-          href="/#contact"
-          className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]"
-        >
-          Contact
-        </Link>
+        <Link href="/" className="text-cyan-400 font-semibold text-lg transition-all hover:drop-shadow-[0_0_8px_cyan]">Event</Link>
 
-        <Link
-          href="/profile"
-          className="text-white/70 hover:text-cyan-400 transition-all hover:drop-shadow-[0_0_8px_cyan]"
-        >
-          Team Profile
-        </Link>
+        <div className="hidden md:flex items-center gap-6 flex-1 justify-center overflow-x-auto">
+          {LinkRow}
+        </div>
 
-        <div className="ml-2 pl-4 border-l border-white/10 flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3">
           {isLoading ? null : isAuthenticated ? (
             <button
               className="text-sm text-black bg-cyan-400 hover:bg-cyan-300 rounded-md px-3 py-1 font-medium"
@@ -147,14 +111,42 @@ export function Header() {
               Sign out
             </button>
           ) : (
-            <Link
-              href="/login"
-              className="text-sm text-black bg-cyan-400 hover:bg-cyan-300 rounded-md px-3 py-1 font-medium"
-            >
-              Login
-            </Link>
+            <Link href="/login" className="text-sm text-black bg-cyan-400 hover:bg-cyan-300 rounded-md px-3 py-1 font-medium">Login</Link>
           )}
         </div>
+
+        {/* Mobile toggle */}
+        <button
+          aria-label="Toggle menu"
+          className="md:hidden ml-auto text-white/80"
+          onClick={() => setMobileOpen(v => !v)}
+        >
+          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+
+        {mobileOpen && (
+          <div className="absolute top-full left-0 right-0 mt-2 rounded-xl bg-black/70 backdrop-blur-md border border-white/15 p-4 md:hidden">
+            <div className="flex flex-col gap-3">
+              {LinkRow}
+              <div className="pt-2 border-t border-white/10" />
+              {isLoading ? null : isAuthenticated ? (
+                <button
+                  className="text-sm text-black bg-cyan-400 hover:bg-cyan-300 rounded-md px-3 py-2 font-medium"
+                  onClick={async () => {
+                    const supabase = getSupabaseClient();
+                    await supabase.auth.signOut();
+                    setMobileOpen(false);
+                    router.refresh();
+                  }}
+                >
+                  Sign out
+                </button>
+              ) : (
+                <Link href="/login" onClick={() => setMobileOpen(false)} className="text-sm text-black bg-cyan-400 hover:bg-cyan-300 rounded-md px-3 py-2 font-medium">Login</Link>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   );

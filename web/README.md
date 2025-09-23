@@ -74,3 +74,19 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Deploy to Vercel (this project)
+
+- Repo layout: this app lives in `web/`. If you import the repo to Vercel as a monorepo, set Project Root to `web/` in the Vercel project settings.
+- Environment variables (Project Settings → Environment Variables):
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Build settings:
+  - Framework preset: Next.js
+  - Build Command: `next build`
+  - Output Directory: `.next`
+- Monorepo tracing: `next.config.ts` sets `outputFileTracingRoot` to the parent directory to avoid missing files during tracing.
+- After deploying, test:
+  - `/login` (team sign-in)
+  - `/profile` (profile + team logout)
+  - `/admin` (admin login)

@@ -3,6 +3,41 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Mobile-first adjustments */
+@media (max-width: 640px) {
+  .section-card { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .tl-title { font-size: 1.125rem !important; } /* 18px */
+  .tl-dot { transform: translateX(-2px); }
+  .tl-line { left: 1.125rem !important; } /* matches dot center */
+}
+
+/* Cyan loader */
+.loader {
+  --s: 20px;
+  --_d: calc(0.353*var(--s));
+  width: calc(var(--s) + var(--_d));
+  aspect-ratio: 1;
+  display: grid;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  grid-area: 1/1;
+  clip-path: polygon(var(--_d) 0,100% 0,100% calc(100% - var(--_d)),calc(100% - var(--_d)) 100%,0 100%,0 var(--_d));
+  background:
+    conic-gradient(from -90deg at calc(100% - var(--_d)) var(--_d),
+     #22d3ee 135deg,#0ea5b7 0 270deg,#67e8f9 0);
+  animation: l6 2s infinite;
+}
+.loader:after { animation-delay:-1s; }
+@keyframes l6{
+  0%  {transform:translate(0,0)}
+  25% {transform:translate(30px,0)}
+  50% {transform:translate(30px,30px)}
+  75% {transform:translate(0,30px)}
+  100%{transform:translate(0,0)}
+}
+
 @theme inline {
   --font-sans: var(--font-sans); 
   --font-mono: var(--font-mono);
@@ -125,11 +160,7 @@ body, p, span, a, h1, h2, h3, h4, h5, h6 {
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground m-0;
-  }
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground m-0; }
   html { scroll-behavior: smooth; }
 }

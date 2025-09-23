@@ -31,9 +31,9 @@ export function ContactSection() {
     <CurvedPanel
       as="aside"
       curvature={0.2}
-      className="w-[1000px] min-h-[280px] flex flex-col gap-6 px-6 py-8
+      className="w-full lg:w-[1000px] min-h-[280px] flex flex-col gap-6 px-6 py-8
       bg-black/70 border border-cyan-400/20 rounded-2xl
-      shadow-[0_0_30px_rgba(0,255,255,0.2)] mr-8
+      shadow-[0_0_30px_rgba(0,255,255,0.2)] mr-0 lg:mr-8
       backdrop-blur-md"
       aria-labelledby="contact-heading"
     >

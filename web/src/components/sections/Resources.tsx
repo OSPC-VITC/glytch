@@ -8,6 +8,7 @@ type ResourcesSectionProps = {
 
 export function ResourcesSection({ links }: ResourcesSectionProps) {
   const hasLinks = Array.isArray(links) && links.length > 0;
+  const list: ResourceLink[] = hasLinks ? (links as ResourceLink[]) : [];
 
   return (
     <CurvedPanel
@@ -32,7 +33,7 @@ export function ResourcesSection({ links }: ResourcesSectionProps) {
         </p>
       ) : (
         <ul className="grid gap-8 sm:grid-cols-2 w-full">
-          {links!.map((link) => (
+          {list.map((link) => (
             <li
               key={link.id}
               className="rounded-xl border border-white/10 p-6 bg-black/30

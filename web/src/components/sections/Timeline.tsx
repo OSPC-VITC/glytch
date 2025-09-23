@@ -12,10 +12,11 @@ type TimelineEvent = {
 };
 
 type TimelineProps = {
-  events: TimelineEvent[];
+  events?: TimelineEvent[];
 };
 
 export function Timeline({ events }: TimelineProps) {
+  const list = Array.isArray(events) ? events : [];
   const contentRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -64,7 +65,7 @@ export function Timeline({ events }: TimelineProps) {
     setActiveIndex(idx);
   });
 
-  const data = events.map((e) => ({
+  const data = list.map((e) => ({
     title: e.title,
     time: `${e.start} → ${e.end}`,
   }));

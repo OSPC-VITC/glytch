@@ -39,6 +39,18 @@
 }
 
 @theme inline {
+  --font-sans: var(--font-sans); 
+  --font-mono: var(--font-mono);
+}
+
+body, p, span, a, h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 700; 
+  letter-spacing: 0.3px;
+}
+
+
+@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);

@@ -1,12 +1,4 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import FaultyTerminal from "@/components/ui/faulty-terminal";
-import Preloader from "@/components/ui/Preloader";
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
 import { Rajdhani } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
@@ -15,7 +7,7 @@ import FaultyTerminal from "@/components/ui/faulty-terminal";
 const rajdhani = Rajdhani({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["500", "600", "700"], 
+  weight: ["500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -30,7 +22,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-
       <body className={`${rajdhani.variable} antialiased`}>
         <Header />
         <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden>

@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense, lazy, useEffect, useState } from "react";
-import { useEffect, useState } from "react";
 import { ResourcesSection } from "@/components/sections/Resources";
 import { ContactSection } from "@/components/sections/Contact";
 import { RulesSection } from "@/components/sections/Rules";

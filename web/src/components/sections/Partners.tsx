@@ -56,7 +56,7 @@ const partners: Partner[] = [
 
 export default function Partners() {
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden py-16">
+    <div className="min-h-screen bg-black/70 relative overflow-hidden py-16">
       {/* Heading */}
       <h1 className="text-4xl md:text-5xl font-extrabold text-center bg-gradient-to-r from-pink-400 via-orange-400 to-purple-400 bg-clip-text text-transparent mb-10 drop-shadow-[0_0_25px_#ff0080]">
         Our Partners

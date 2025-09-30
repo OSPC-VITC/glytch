@@ -67,7 +67,7 @@ const judges: Judge[] = [
 
 export default function Judges() {
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden py-16">
+    <div className="min-h-screen bg-black/70 relative overflow-hidden py-16">
       {/* Animated background glow */}
       <motion.div
         className="absolute inset-0 opacity-20 pointer-events-none"

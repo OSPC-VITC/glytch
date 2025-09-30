@@ -162,42 +162,12 @@ export default function Home() {
           </Suspense>
         </div>
 
-        <div id="timeline" className="scroll-mt-24">
-          <Suspense fallback={<Loader size={24} />}>
-            <Timeline events={events} />
-          </Suspense>
-        </div>
-
-        <div id="rules" className="scroll-mt-24">
-          <Suspense fallback={<Loader size={24} />}>
-            <Rules />
-          </Suspense>
-        </div>
 
         <div id="faq" className="scroll-mt-24">
           <Suspense fallback={<Loader size={24} />}>
             <FAQ />
           </Suspense>
         </div>
-
-        <div id="resources" className="scroll-mt-24">
-          <Suspense fallback={<Loader size={24} />}>
-            <Resources />
-          </Suspense>
-        </div>
-
-        <div id="contact" className="scroll-mt-24">
-          <Suspense fallback={<Loader size={24} />}>
-            <Contact />
-          </Suspense>
-        </div>
-
-        <div id="authors" className="scroll-mt-24">
-          <Suspense fallback={<Loader size={24} />}>
-            <Author />
-          </Suspense>
-        </div>
-
       </main>
     </>
   );

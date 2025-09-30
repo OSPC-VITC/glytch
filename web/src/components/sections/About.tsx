@@ -81,7 +81,7 @@ export default function About() {
   return (
     <section 
       id="about" 
-      className="min-h-screen flex items-center justify-center py-10 px-4 relative overflow-hidden bg-black"
+      className="min-h-screen flex items-center justify-center py-10 px-4 relative overflow-hidden bg-black/70"
     >
       {/* Animated background elements - vibrant themed */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

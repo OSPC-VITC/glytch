@@ -11,6 +11,7 @@ const Resources = lazy(() => import("@/components/sections/Resources").then(m =>
 const Contact = lazy(() => import("@/components/sections/Contact").then(m => ({ default: m.ContactSection })));
 const Rules = lazy(() => import("@/components/sections/Rules").then(m => ({ default: m.RulesSection })));
 const Author = lazy(() => import("@/components/sections/Author").then(m => ({ default: m.Author })));
+const FAQ = lazy(() => import("@/components/sections/FAQ"));
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({
@@ -189,20 +190,15 @@ export default function Home() {
           </Suspense>
         </div>
 
-        <div id="resources" className="scroll-mt-24">
+        <div id="faq" className="scroll-mt-24">
           <Suspense fallback={<Loader size={24} />}>
-            <Resources />
+            <FAQ />
           </Suspense>
         </div>
 
-        <div id="faq" className="scroll-mt-24">
+        <div id="resources" className="scroll-mt-24">
           <Suspense fallback={<Loader size={24} />}>
-            <div className="bg-black/30 backdrop-blur-sm rounded-2xl border border-purple-500/30 p-8">
-              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 mb-4">FAQ</h2>
-              <p className="text-white/80 text-lg leading-relaxed">
-                Frequently asked questions.
-              </p>
-            </div>
+            <Resources />
           </Suspense>
         </div>
 

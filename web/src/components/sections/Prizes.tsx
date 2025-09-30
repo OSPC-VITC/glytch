@@ -209,16 +209,16 @@ const PrizeCard = memo(({ prize, index, isHovered, onHover }: PrizeCardProps) =>
 
           {/* Title */}
           <h3
-            className={cn(
-              'text-3xl md:text-4xl font-bold mb-3 tracking-tight transition-all duration-300',
-              `bg-gradient-to-r ${prize.colors.primary} bg-clip-text text-transparent`
-            )}
-            style={{
-              filter: isHovered ? `drop-shadow(0 0 20px ${prize.colors.glow})` : 'none'
-            }}
-          >
-            {prize.title}
-          </h3>
+  className={cn(
+    'text-3xl md:text-4xl font-bold mb-3 tracking-tight transition-all duration-300 text-[#f2f2f2]'
+  )}
+  style={{
+    filter: isHovered ? `drop-shadow(0 0 20px ${prize.colors.glow})` : 'none'
+  }}
+>
+  {prize.title}
+</h3>
+
 
           {/* Description */}
           <p className={cn(
@@ -297,7 +297,7 @@ export default function Prizes() {
   return (
     <section
       id="prizes"
-      className="relative py-32 scroll-mt-32 overflow-hidden bg-black"
+      className="relative py-10 scroll-mt-32 overflow-hidden bg-black/70"
     >
       {/* Background Gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

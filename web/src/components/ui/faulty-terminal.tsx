@@ -5,12 +5,10 @@ import type { OGLRenderingContext } from "ogl";
 import React, { useEffect, useRef, useMemo, useCallback } from "react";
 
 type Vec2 = [number, number];
-
 type UniformValue = number | boolean | Color | Float32Array;
-
 type ShaderUniform = { value: UniformValue };
 
-type FaultyUniforms = {
+type SpiderVerseUniforms = {
   iTime: ShaderUniform;
   iResolution: ShaderUniform;
   uScale: ShaderUniform;
@@ -30,9 +28,11 @@ type FaultyUniforms = {
   uPageLoadProgress: ShaderUniform;
   uUsePageLoadAnimation: ShaderUniform;
   uBrightness: ShaderUniform;
+  uWebIntensity: ShaderUniform;
+  uPulseSpeed: ShaderUniform;
 };
 
-export interface FaultyTerminalProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SpiderVerseTerminalProps extends React.HTMLAttributes<HTMLDivElement> {
   scale?: number;
   gridMul?: Vec2;
   digitSize?: number;
@@ -45,12 +45,13 @@ export interface FaultyTerminalProps extends React.HTMLAttributes<HTMLDivElement
   chromaticAberration?: number;
   dither?: number | boolean;
   curvature?: number;
-  tint?: string;
   mouseReact?: boolean;
   mouseStrength?: number;
   dpr?: number;
   pageLoadAnimation?: boolean;
   brightness?: number;
+  webIntensity?: number;
+  pulseSpeed?: number;
 }
 
 const vertexShader = `
@@ -71,7 +72,6 @@ varying vec2 vUv;
 uniform float iTime;
 uniform vec3  iResolution;
 uniform float uScale;
-
 uniform vec2  uGridMul;
 uniform float uDigitSize;
 uniform float uScanlineIntensity;
@@ -88,6 +88,11 @@ uniform float uUseMouse;
 uniform float uPageLoadProgress;
 uniform float uUsePageLoadAnimation;
 uniform float uBrightness;
+uniform float uWebIntensity;
+uniform float uPulseSpeed;
+
+#define PI 3.14159265359
+#define TWO_PI 6.28318530718
 
 float time;
 
@@ -97,20 +102,17 @@ float hash21(vec2 p){
   return fract(p.x * p.y);
 }
 
-float noise(vec2 p)
-{
+float noise(vec2 p) {
   return sin(p.x * 10.0) * sin(p.y * (3.0 + sin(time * 0.090909))) + 0.2; 
 }
 
-mat2 rotate(float angle)
-{
+mat2 rotate(float angle) {
   float c = cos(angle);
   float s = sin(angle);
   return mat2(c, -s, s, c);
 }
 
-float fbm(vec2 p)
-{
+float fbm(vec2 p) {
   p *= 1.1;
   float f = 0.0;
   float amp = 0.5 * uNoiseAmp;
@@ -140,6 +142,43 @@ float pattern(vec2 p, out vec2 q, out vec2 r) {
   q = vec2(fbm(p + offset1), fbm(rot01 * p + offset1));
   r = vec2(fbm(rot1 * q + offset0), fbm(q + offset0));
   return fbm(p + r);
+}
+
+// Spider-Verse web overlay
+vec3 spiderWebOverlay(vec2 p, float t) {
+  vec2 center = vec2(0.5);
+  vec2 toCenter = p - center;
+  float dist = length(toCenter);
+  float angle = atan(toCenter.y, toCenter.x);
+  
+  // Radial spokes (8 main ones)
+  float spokeCount = 8.0;
+  float spokeAngle = mod(angle + PI, TWO_PI / spokeCount);
+  float spokes = smoothstep(0.015, 0.0, spokeAngle) + smoothstep(0.015, 0.0, TWO_PI / spokeCount - spokeAngle);
+  
+  // Circular rings
+  float ringPattern = 0.0;
+  for(float i = 1.0; i < 6.0; i += 1.0) {
+    float ringDist = i * 0.12;
+    float ring = 1.0 - smoothstep(0.0, 0.004, abs(dist - ringDist));
+    ringPattern += ring * 0.3;
+  }
+  
+  // Pulse effect
+  float pulse = sin(t * uPulseSpeed) * 0.5 + 0.5;
+  
+  // Spider-Verse colors
+  vec3 hotPink = vec3(1.0, 0.0, 0.5);
+  vec3 electricPurple = vec3(0.5, 0.0, 0.8);
+  vec3 cyan = vec3(0.0, 0.8, 1.0);
+  
+  vec3 webColor = mix(hotPink, electricPurple, dist);
+  webColor = mix(webColor, cyan, pulse * 0.5);
+  
+  float webPattern = (spokes + ringPattern) * uWebIntensity;
+  webPattern *= (1.0 - smoothstep(0.5, 1.0, dist)); // fade at edges
+  
+  return webColor * webPattern;
 }
 
 float digit(vec2 p){
@@ -187,20 +226,17 @@ float digit(vec2 p){
     return step(0.0, p.x) * step(p.x, 1.0) * step(0.0, p.y) * step(p.y, 1.0) * brightness;
 }
 
-float onOff(float a, float b, float c)
-{
+float onOff(float a, float b, float c) {
   return step(c, sin(iTime + a * cos(iTime * b))) * uFlickerAmount;
 }
 
-float displace(vec2 look)
-{
+float displace(vec2 look) {
     float y = look.y - mod(iTime * 0.25, 1.0);
     float window = 1.0 / (1.0 + 50.0 * y * y);
     return sin(look.y * 20.0 + iTime) * 0.0125 * onOff(4.0, 2.0, 0.8) * (1.0 + cos(iTime * 60.0)) * window;
 }
 
 vec3 getColor(vec2 p){
-    
     float bar = step(mod(p.y + time * 20.0, 1.0), 0.2) * 0.4 + 1.0;
     bar *= uScanlineIntensity;
     
@@ -247,7 +283,13 @@ void main() {
       col.b = getColor(p - ca).b;
     }
 
+    // Apply spider-verse tint
     col *= uTint;
+    
+    // Add web overlay
+    vec3 webOverlay = spiderWebOverlay(uv, iTime);
+    col += webOverlay;
+    
     col *= uBrightness;
 
     if(uDither > 0.0){
@@ -262,15 +304,12 @@ void main() {
 function hexToRgb(hex: string): [number, number, number] {
   let h = hex.replace('#', '').trim();
   if (h.length === 3)
-    h = h
-      .split('')
-      .map(c => c + c)
-      .join('');
+    h = h.split('').map(c => c + c).join('');
   const num = parseInt(h, 16);
   return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
 }
 
-export default function FaultyTerminal({
+export default function SpiderVerseTerminal({
   scale = 1,
   gridMul = [2, 1],
   digitSize = 1.5,
@@ -280,19 +319,20 @@ export default function FaultyTerminal({
   glitchAmount = 1,
   flickerAmount = 1,
   noiseAmp = 1,
-  chromaticAberration = 0,
-  dither = 0,
-  curvature = 0.2,
-  tint = '#26C6DA',
+  chromaticAberration = 2,
+  dither = 0.5,
+  curvature = 0.1,
   mouseReact = true,
   mouseStrength = 0.2,
   dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio || 1, 2) : 1,
   pageLoadAnimation = true,
-  brightness = 1,
+  brightness = 0.9,
+  webIntensity = 0.15,
+  pulseSpeed = 2.0,
   className,
   style,
   ...rest
-}: FaultyTerminalProps) {
+}: SpiderVerseTerminalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const programRef = useRef<Program | null>(null);
   const rendererRef = useRef<Renderer | null>(null);
@@ -303,7 +343,10 @@ export default function FaultyTerminal({
   const loadAnimationStartRef = useRef<number>(0);
   const timeOffsetRef = useRef<number>(Math.random() * 100);
 
-  const tintVec = useMemo(() => hexToRgb(tint), [tint]);
+  // Spider-Verse color palette - cycling through hot pink, electric purple, cyan
+  const tintVec = useMemo(() => {
+    return hexToRgb('#FF0080'); // Hot pink as base
+  }, []);
 
   const ditherValue = useMemo(() => (typeof dither === 'boolean' ? (dither ? 1 : 0) : dither), [dither]);
 
@@ -324,7 +367,7 @@ export default function FaultyTerminal({
     try {
       renderer = new Renderer({ dpr });
     } catch {
-      return; // gracefully skip when WebGL cannot initialize
+      return;
     }
     if (!renderer) return;
 
@@ -334,7 +377,7 @@ export default function FaultyTerminal({
 
     const geometry = new Triangle(gl);
 
-    const uniforms: FaultyUniforms = {
+    const uniforms: SpiderVerseUniforms = {
       iTime: { value: 0 },
       iResolution: { value: new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height) },
       uScale: { value: scale },
@@ -354,13 +397,19 @@ export default function FaultyTerminal({
       uPageLoadProgress: { value: pageLoadAnimation ? 0 : 1 },
       uUsePageLoadAnimation: { value: pageLoadAnimation ? 1 : 0 },
       uBrightness: { value: brightness },
+      uWebIntensity: { value: webIntensity },
+      uPulseSpeed: { value: pulseSpeed },
     };
 
     let program: Program | null = null;
     try {
-      program = new Program(gl, { vertex: vertexShader, fragment: fragmentShader, uniforms: uniforms as unknown as Record<string, { value: unknown }> });
+      program = new Program(gl, { 
+        vertex: vertexShader, 
+        fragment: fragmentShader, 
+        uniforms: uniforms as unknown as Record<string, { value: unknown }> 
+      });
     } catch {
-      return; // shader compile issues or context problems
+      return;
     }
     if (!program) return;
 
@@ -380,6 +429,7 @@ export default function FaultyTerminal({
     const update = (t: number) => {
       rafRef.current = requestAnimationFrame(update);
       if (pageLoadAnimation && loadAnimationStartRef.current === 0) loadAnimationStartRef.current = t;
+      
       if (!pause) {
         const elapsed = (t * 0.001 + timeOffsetRef.current) * timeScale;
         uniforms.iTime.value = elapsed;
@@ -387,11 +437,13 @@ export default function FaultyTerminal({
       } else {
         uniforms.iTime.value = frozenTimeRef.current;
       }
+      
       if (pageLoadAnimation && loadAnimationStartRef.current > 0) {
         const animationDuration = 2000;
         const progress = Math.min((t - loadAnimationStartRef.current) / animationDuration, 1);
         uniforms.uPageLoadProgress.value = progress;
       }
+      
       if (mouseReact) {
         const dampingFactor = 0.08;
         const smoothMouse = smoothMouseRef.current;
@@ -402,8 +454,10 @@ export default function FaultyTerminal({
         mouseUniform[0] = smoothMouse.x;
         mouseUniform[1] = smoothMouse.y;
       }
+      
       renderer!.render({ scene: mesh });
     };
+    
     rafRef.current = requestAnimationFrame(update);
     ctn.appendChild(gl.canvas);
 
@@ -438,10 +492,17 @@ export default function FaultyTerminal({
     mouseStrength,
     pageLoadAnimation,
     brightness,
+    webIntensity,
+    pulseSpeed,
     handleMouseMove
   ]);
 
   return (
-    <div ref={containerRef} className={`w-full h-full ${className ?? ""}`} style={style} {...rest} />
+    <div 
+      ref={containerRef} 
+      className={`w-full h-full ${className ?? ""}`} 
+      style={style} 
+      {...rest} 
+    />
   );
 }

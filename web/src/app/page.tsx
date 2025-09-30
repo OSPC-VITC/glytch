@@ -3,6 +3,10 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import DemoOne from "@/components/ui/demo-one";
 import Loader from "@/components/ui/Loader";
+import Organizers from "@/components/sections/Organisers";
+import Partners from "@/components/sections/Partners";
+import Judges from "@/components/sections/Judges";
+import Tracks from "@/components/sections/Tracks";
 
 const Timeline = lazy(() => import("@/components/sections/Timeline").then(m => ({ default: m.Timeline })));
 const About = lazy(() => import("@/components/sections/About"));
@@ -119,12 +123,7 @@ export default function Home() {
 
         <div id="tracks" className="scroll-mt-24">
           <Suspense fallback={<Loader size={24} />}>
-            <div className="bg-black/30 backdrop-blur-sm rounded-2xl border border-purple-500/30 p-8">
-              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 mb-4">Tracks</h2>
-              <p className="text-white/80 text-lg leading-relaxed">
-                Competition tracks will be displayed here.
-              </p>
-            </div>
+            <Tracks/>
           </Suspense>
         </div>
 
@@ -136,34 +135,19 @@ export default function Home() {
 
         <div id="judges" className="scroll-mt-24">
           <Suspense fallback={<Loader size={24} />}>
-            <div className="bg-black/30 backdrop-blur-sm rounded-2xl border border-purple-500/30 p-8">
-              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 mb-4">Judges</h2>
-              <p className="text-white/80 text-lg leading-relaxed">
-                Meet our panel of judges.
-              </p>
-            </div>
+            <Judges/>
           </Suspense>
         </div>
 
         <div id="organisers" className="scroll-mt-24">
           <Suspense fallback={<Loader size={24} />}>
-            <div className="bg-black/30 backdrop-blur-sm rounded-2xl border border-purple-500/30 p-8">
-              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 mb-4">Organisers</h2>
-              <p className="text-white/80 text-lg leading-relaxed">
-                Learn about the organising team.
-              </p>
-            </div>
+            <Organizers/>
           </Suspense>
         </div>
 
         <div id="partners" className="scroll-mt-24">
           <Suspense fallback={<Loader size={24} />}>
-            <div className="bg-black/30 backdrop-blur-sm rounded-2xl border border-purple-500/30 p-8">
-              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 mb-4">Partners</h2>
-              <p className="text-white/80 text-lg leading-relaxed">
-                Our event partners.
-              </p>
-            </div>
+            <Partners/>
           </Suspense>
         </div>
 

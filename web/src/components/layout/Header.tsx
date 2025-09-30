@@ -51,12 +51,12 @@ export function Header() {
 
   return (
     <header className="fixed top-6 inset-x-0 z-50 flex justify-center">
-      <nav
-        ref={navRef}
-        className="relative flex items-center gap-3 md:gap-8 px-4 md:px-8 py-3 rounded-full
-          bg-[rgba(20,10,35,0.85)] backdrop-blur-md backdrop-saturate-150
-          border border-purple-500/30 shadow-[0_8px_30px_rgba(0,0,0,0.6)] w-[calc(100%-1.5rem)] max-w-[1100px]"
-      >
+  <nav
+    ref={navRef}
+    className="relative flex items-center gap-3 md:gap-8 px-4 md:px-8 py-3 rounded-full
+      bg-[rgba(20,10,35,0.5)] backdrop-blur-lg backdrop-saturate-150
+      border border-purple-500/30 shadow-[0_8px_30px_rgba(0,0,0,0.6)] w-[calc(100%-1.5rem)] max-w-[1100px]"
+  >
         {/* Glass overlays */}
         <div aria-hidden className="pointer-events-none absolute inset-0 rounded-full" style={{ boxShadow: "inset 0 0 0 1px rgba(168,85,247,0.15), 0 0 0 1px rgba(168,85,247,0.08)" }} />
         <div aria-hidden className="pointer-events-none absolute inset-0 rounded-full opacity-40" style={{ background: "radial-gradient(120% 140% at 50% 0%, rgba(236,72,153,0.22) 0%, rgba(236,72,153,0.08) 35%, transparent 60%)", maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)" }} />

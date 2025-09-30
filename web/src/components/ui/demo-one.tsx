@@ -343,33 +343,23 @@ export default function DemoTwo() {
   const radius = useTransform(scrollYProgress, [0, 0.5], ["0px", "40px"]);
 
   return (
-    <motion.div
-      ref={sectionRef}
-      style={{ scale, borderRadius: radius }}
-      className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden"
-    >
-      <SpiderWebAttack />
-      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+  <motion.div
+    ref={sectionRef}
+    style={{ scale, borderRadius: radius }}
+    className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden"
+  >
+    <SpiderWebAttack />
+    <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+      <motion.div className="glytch-wrapper">
         <motion.div
-          className="text-8xl font-extrabold text-black tracking-widest"
-          animate={{
-            textShadow: [
-              "0 0 20px rgba(255,0,128,0.9), 0 0 40px rgba(255,0,128,0.7), 0 0 80px rgba(255,0,128,0.5)",
-              "0 0 30px rgba(255,0,0,0.9), 0 0 60px rgba(255,0,0,0.7), 0 0 100px rgba(255,0,0,0.5)",
-              "0 0 20px rgba(128,0,255,0.9), 0 0 40px rgba(128,0,255,0.7), 0 0 80px rgba(128,0,255,0.5)",
-              "0 0 20px rgba(255,0,128,0.9), 0 0 40px rgba(255,0,128,0.7), 0 0 80px rgba(255,0,128,0.5)",
-            ],
-            scale: [1, 1.03, 1],
-          }}
-          transition={{
-            duration: 2.0,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          className="text-8xl font-extrabold tracking-widest glytch"
+          data-text="GLYTCH"
         >
-         
+          GLYTCH
         </motion.div>
-      </div>
-    </motion.div>
-  );
+        <div className="glytch-bubble-dot" />
+      </motion.div>
+    </div>
+  </motion.div>
+);
 }

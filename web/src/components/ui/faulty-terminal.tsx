@@ -144,19 +144,16 @@ float pattern(vec2 p, out vec2 q, out vec2 r) {
   return fbm(p + r);
 }
 
-// Spider-Verse web overlay
 vec3 spiderWebOverlay(vec2 p, float t) {
   vec2 center = vec2(0.5);
   vec2 toCenter = p - center;
   float dist = length(toCenter);
   float angle = atan(toCenter.y, toCenter.x);
   
-  // Radial spokes (8 main ones)
   float spokeCount = 8.0;
   float spokeAngle = mod(angle + PI, TWO_PI / spokeCount);
   float spokes = smoothstep(0.015, 0.0, spokeAngle) + smoothstep(0.015, 0.0, TWO_PI / spokeCount - spokeAngle);
   
-  // Circular rings
   float ringPattern = 0.0;
   for(float i = 1.0; i < 6.0; i += 1.0) {
     float ringDist = i * 0.12;
@@ -164,10 +161,8 @@ vec3 spiderWebOverlay(vec2 p, float t) {
     ringPattern += ring * 0.3;
   }
   
-  // Pulse effect
   float pulse = sin(t * uPulseSpeed) * 0.5 + 0.5;
   
-  // Spider-Verse colors
   vec3 hotPink = vec3(1.0, 0.0, 0.5);
   vec3 electricPurple = vec3(0.5, 0.0, 0.8);
   vec3 cyan = vec3(0.0, 0.8, 1.0);
@@ -176,7 +171,7 @@ vec3 spiderWebOverlay(vec2 p, float t) {
   webColor = mix(webColor, cyan, pulse * 0.5);
   
   float webPattern = (spokes + ringPattern) * uWebIntensity;
-  webPattern *= (1.0 - smoothstep(0.5, 1.0, dist)); // fade at edges
+  webPattern *= (1.0 - smoothstep(0.5, 1.0, dist));
   
   return webColor * webPattern;
 }
@@ -283,10 +278,8 @@ void main() {
       col.b = getColor(p - ca).b;
     }
 
-    // Apply spider-verse tint
     col *= uTint;
     
-    // Add web overlay
     vec3 webOverlay = spiderWebOverlay(uv, iTime);
     col += webOverlay;
     
@@ -301,13 +294,14 @@ void main() {
 }
 `;
 
-function hexToRgb(hex: string): [number, number, number] {
+const hexToRgb = (hex: string): [number, number, number] => {
   let h = hex.replace('#', '').trim();
-  if (h.length === 3)
-    h = h.split('').map(c => c + c).join('');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
   const num = parseInt(h, 16);
   return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
-}
+};
+
+const DEFAULT_DPR = typeof window !== "undefined" ? Math.min(window.devicePixelRatio || 1, 2) : 1;
 
 export default function SpiderVerseTerminal({
   scale = 1,
@@ -324,7 +318,7 @@ export default function SpiderVerseTerminal({
   curvature = 0.1,
   mouseReact = true,
   mouseStrength = 0.2,
-  dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio || 1, 2) : 1,
+  dpr = DEFAULT_DPR,
   pageLoadAnimation = true,
   brightness = 0.9,
   webIntensity = 0.15,
@@ -343,20 +337,18 @@ export default function SpiderVerseTerminal({
   const loadAnimationStartRef = useRef<number>(0);
   const timeOffsetRef = useRef<number>(Math.random() * 100);
 
-  // Spider-Verse color palette - cycling through hot pink, electric purple, cyan
-  const tintVec = useMemo(() => {
-    return hexToRgb('#FF0080'); // Hot pink as base
-  }, []);
-
+  const tintVec = useMemo(() => hexToRgb('#FF0080'), []);
   const ditherValue = useMemo(() => (typeof dither === 'boolean' ? (dither ? 1 : 0) : dither), [dither]);
+  const gridMulArray = useMemo(() => new Float32Array(gridMul), [gridMul[0], gridMul[1]]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     const ctn = containerRef.current;
     if (!ctn) return;
     const rect = ctn.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = 1 - (e.clientY - rect.top) / rect.height;
-    mouseRef.current = { x, y };
+    mouseRef.current = {
+      x: (e.clientX - rect.left) / rect.width,
+      y: 1 - (e.clientY - rect.top) / rect.height
+    };
   }, []);
 
   useEffect(() => {
@@ -381,7 +373,7 @@ export default function SpiderVerseTerminal({
       iTime: { value: 0 },
       iResolution: { value: new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height) },
       uScale: { value: scale },
-      uGridMul: { value: new Float32Array(gridMul) },
+      uGridMul: { value: gridMulArray },
       uDigitSize: { value: digitSize },
       uScanlineIntensity: { value: scanlineIntensity },
       uGlitchAmount: { value: glitchAmount },
@@ -391,7 +383,7 @@ export default function SpiderVerseTerminal({
       uDither: { value: ditherValue },
       uCurvature: { value: curvature },
       uTint: { value: new Color(tintVec[0], tintVec[1], tintVec[2]) },
-      uMouse: { value: new Float32Array([smoothMouseRef.current.x, smoothMouseRef.current.y]) },
+      uMouse: { value: new Float32Array([0.5, 0.5]) },
       uMouseStrength: { value: mouseStrength },
       uUseMouse: { value: mouseReact ? 1 : 0 },
       uPageLoadProgress: { value: pageLoadAnimation ? 0 : 1 },
@@ -416,19 +408,26 @@ export default function SpiderVerseTerminal({
     programRef.current = program;
     const mesh = new Mesh(gl, { geometry, program });
 
-    function resize() {
+    const resize = () => {
       if (!ctn || !renderer) return;
       renderer.setSize(ctn.offsetWidth, ctn.offsetHeight);
       uniforms.iResolution.value = new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height);
-    }
+    };
 
-    const resizeObserver = new ResizeObserver(() => resize());
+    const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(ctn);
     resize();
 
+    const mouseUniform = uniforms.uMouse.value as Float32Array;
+    const smoothMouse = smoothMouseRef.current;
+    const mouse = mouseRef.current;
+
     const update = (t: number) => {
       rafRef.current = requestAnimationFrame(update);
-      if (pageLoadAnimation && loadAnimationStartRef.current === 0) loadAnimationStartRef.current = t;
+      
+      if (pageLoadAnimation && loadAnimationStartRef.current === 0) {
+        loadAnimationStartRef.current = t;
+      }
       
       if (!pause) {
         const elapsed = (t * 0.001 + timeOffsetRef.current) * timeScale;
@@ -439,18 +438,13 @@ export default function SpiderVerseTerminal({
       }
       
       if (pageLoadAnimation && loadAnimationStartRef.current > 0) {
-        const animationDuration = 2000;
-        const progress = Math.min((t - loadAnimationStartRef.current) / animationDuration, 1);
+        const progress = Math.min((t - loadAnimationStartRef.current) * 0.0005, 1);
         uniforms.uPageLoadProgress.value = progress;
       }
       
       if (mouseReact) {
-        const dampingFactor = 0.08;
-        const smoothMouse = smoothMouseRef.current;
-        const mouse = mouseRef.current;
-        smoothMouse.x += (mouse.x - smoothMouse.x) * dampingFactor;
-        smoothMouse.y += (mouse.y - smoothMouse.y) * dampingFactor;
-        const mouseUniform = uniforms.uMouse.value as Float32Array;
+        smoothMouse.x += (mouse.x - smoothMouse.x) * 0.08;
+        smoothMouse.y += (mouse.y - smoothMouse.y) * 0.08;
         mouseUniform[0] = smoothMouse.x;
         mouseUniform[1] = smoothMouse.y;
       }
@@ -478,7 +472,7 @@ export default function SpiderVerseTerminal({
     pause,
     timeScale,
     scale,
-    gridMul,
+    gridMulArray,
     digitSize,
     scanlineIntensity,
     glitchAmount,

@@ -29,7 +29,7 @@ const DATA: Track[] = [
     ],
     badges: ["UPI Integration", "Secure", "Scalable"],
     background: "url('https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2070&auto=format&fit=crop')",
-    accent: "#00ff88",
+    accent: "#ff0080",
   },
   {
     id: "health-ed",
@@ -96,7 +96,6 @@ const DATA: Track[] = [
 export default function Tracks() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -125,41 +124,42 @@ export default function Tracks() {
   const currentTrack = DATA[currentIndex];
 
   return (
-    <section id="tracks" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #000 0%, #0a0a0a 100%)', padding: '80px 20px', position: 'relative', overflow: 'hidden' }}>
+    <section id="tracks" className="relative py-10 scroll-mt-32 overflow-hidden bg-black/70">
       <style jsx>{`
         @keyframes pulse {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 0.5; }
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 0.35; }
         }
         @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-30px); }
+          from { opacity: 0; transform: translateX(-20px); }
           to { opacity: 1; transform: translateX(0); }
         }
         @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(30px); }
+          from { opacity: 0; transform: translateX(20px); }
           to { opacity: 1; transform: translateX(0); }
         }
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(15px); }
-          to { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
         .bgOrb {
           position: absolute;
           border-radius: 50%;
-          filter: blur(80px);
-          animation: pulse 4s ease-in-out infinite;
+          filter: blur(100px);
+          animation: pulse 6s ease-in-out infinite;
           pointer-events: none;
           will-change: opacity;
         }
         .container {
           max-width: 1400px;
           margin: 0 auto;
+          padding: 0 20px;
           position: relative;
           z-index: 1;
         }
         .header {
           text-align: center;
-          margin-bottom: 60px;
+          margin-bottom: 48px;
         }
         .subtitle {
           color: rgba(255, 255, 255, 0.5);
@@ -182,43 +182,35 @@ export default function Tracks() {
         .mainContent {
           display: grid;
           grid-template-columns: 1fr 1.2fr;
-          gap: 40px;
+          gap: 32px;
           align-items: center;
-          min-height: 600px;
+          min-height: 500px;
         }
         .leftPanel {
           display: flex;
           flex-direction: column;
-          gap: 32px;
+          gap: 28px;
           background: rgba(255, 255, 255, 0.02);
-          padding: 48px;
-          border-radius: 32px;
+          padding: 40px;
+          border-radius: 24px;
           border: 1px solid rgba(255, 255, 255, 0.05);
-          will-change: transform, opacity;
+          will-change: transform;
+          transition: transform 0.3s ease-out;
         }
         .numberBadge {
-          font-size: 8rem;
+          font-size: 7rem;
           font-weight: 900;
           line-height: 1;
-          background: linear-gradient(135deg, ${currentTrack.accent} 0%, rgba(255,255,255,0.3) 100%);
+          background: linear-gradient(135deg, ${currentTrack.accent} 0%, rgba(255,255,255,0.4) 100%);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
-          text-shadow: 0 0 80px ${currentTrack.accent}80;
-          animation: fadeIn 0.6s ease-out;
+          animation: fadeIn 0.4s ease-out;
           position: relative;
-        }
-        .numberBadge::before {
-          content: '${currentTrack.number}';
-          position: absolute;
-          top: 0;
-          left: 0;
-          z-index: -1;
-          filter: blur(20px);
-          opacity: 0.5;
+          filter: drop-shadow(0 0 30px ${currentTrack.accent}60);
         }
         .trackMeta {
-          animation: slideInLeft 0.6s ease-out 0.1s both;
+          animation: slideInLeft 0.5s ease-out both;
         }
         .brand {
           font-size: 0.85rem;
@@ -229,26 +221,26 @@ export default function Tracks() {
           margin-bottom: 12px;
         }
         .trackName {
-          font-size: 3rem;
+          font-size: 2.5rem;
           font-weight: 800;
           color: white;
           line-height: 1.1;
-          margin: 0 0 16px 0;
+          margin: 0 0 12px 0;
           letter-spacing: -1px;
         }
         .trackSubtitle {
-          font-size: 1.1rem;
+          font-size: 1rem;
           color: rgba(255, 255, 255, 0.6);
-          line-height: 1.6;
+          line-height: 1.5;
         }
         .navigation {
           display: flex;
-          gap: 16px;
-          animation: fadeIn 0.6s ease-out 0.2s both;
+          gap: 12px;
+          animation: fadeIn 0.5s ease-out 0.1s both;
         }
         .navBtn {
-          width: 60px;
-          height: 60px;
+          width: 56px;
+          height: 56px;
           border: 2px solid ${currentTrack.accent}40;
           background: rgba(0, 0, 0, 0.4);
           backdrop-filter: blur(10px);
@@ -256,7 +248,7 @@ export default function Tracks() {
           color: ${currentTrack.accent};
           font-size: 1.5rem;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -264,12 +256,15 @@ export default function Tracks() {
         .navBtn:hover {
           background: ${currentTrack.accent}20;
           border-color: ${currentTrack.accent};
-          transform: scale(1.1);
+          transform: scale(1.08);
+        }
+        .navBtn:active {
+          transform: scale(0.95);
         }
         .rightPanel {
           position: relative;
-          height: 600px;
-          animation: slideInRight 0.6s ease-out 0.2s both;
+          height: 500px;
+          animation: slideInRight 0.5s ease-out both;
         }
         .imageContainer {
           position: absolute;
@@ -277,78 +272,78 @@ export default function Tracks() {
           left: 0;
           width: 100%;
           height: 100%;
-          border-radius: 32px;
+          border-radius: 24px;
           overflow: hidden;
           background-image: ${currentTrack.background};
           background-size: cover;
           background-position: center;
-          box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 1px ${currentTrack.accent}30;
-          transition: transform 0.4s ease-out;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px ${currentTrack.accent}30;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           will-change: transform;
         }
         .imageContainer:hover {
-          transform: scale(1.02);
+          transform: scale(1.015);
         }
         .imageOverlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, ${currentTrack.accent}20 0%, transparent 50%, rgba(0,0,0,0.8) 100%);
+          background: linear-gradient(135deg, ${currentTrack.accent}15 0%, transparent 50%, rgba(0,0,0,0.85) 100%);
         }
         .contentOverlay {
           position: absolute;
           bottom: 0;
           left: 0;
           right: 0;
-          padding: 40px;
+          padding: 32px;
           background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
         }
         .specs {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          margin-bottom: 24px;
+          gap: 12px;
+          margin-bottom: 20px;
         }
         .spec {
           background: rgba(0, 0, 0, 0.6);
           backdrop-filter: blur(10px);
           border: 1px solid ${currentTrack.accent}30;
-          border-radius: 16px;
-          padding: 16px;
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          border-radius: 12px;
+          padding: 14px;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .spec:hover {
           background: rgba(0, 0, 0, 0.8);
           border-color: ${currentTrack.accent};
-          transform: translateY(-4px);
+          transform: translateY(-3px);
         }
         .specLabel {
-          font-size: 0.75rem;
+          font-size: 0.7rem;
           color: ${currentTrack.accent};
           text-transform: uppercase;
           letter-spacing: 1px;
-          margin-bottom: 6px;
+          margin-bottom: 4px;
           font-weight: 700;
         }
         .specValue {
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           color: white;
           font-weight: 500;
-          line-height: 1.4;
+          line-height: 1.3;
         }
         .badges {
           display: flex;
           flex-wrap: wrap;
-          gap: 12px;
+          gap: 10px;
         }
         .badge {
-          padding: 10px 20px;
+          padding: 8px 16px;
           background: ${currentTrack.accent}20;
           border: 1px solid ${currentTrack.accent}60;
-          border-radius: 24px;
+          border-radius: 20px;
           color: white;
-          font-size: 0.85rem;
+          font-size: 0.8rem;
           font-weight: 600;
-          transition: all 0.3s ease;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
           backdrop-filter: blur(10px);
         }
         .badge:hover {
@@ -359,16 +354,16 @@ export default function Tracks() {
         .dots {
           display: flex;
           justify-content: center;
-          gap: 16px;
-          margin-top: 60px;
+          gap: 14px;
+          margin-top: 48px;
         }
         .dot {
-          width: 48px;
-          height: 4px;
+          width: 40px;
+          height: 3px;
           background: rgba(255, 255, 255, 0.2);
           border-radius: 2px;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
           position: relative;
           overflow: hidden;
         }
@@ -382,21 +377,22 @@ export default function Tracks() {
           background: ${currentTrack.accent};
           transform: scaleX(0);
           transform-origin: left;
-          transition: transform 0.3s ease;
+          transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .dot.active::before {
           transform: scaleX(1);
         }
         .dot:hover {
-          background: rgba(255, 255, 255, 0.4);
+          background: rgba(255, 255, 255, 0.35);
         }
         @media (max-width: 1024px) {
           .mainContent {
             grid-template-columns: 1fr;
-            gap: 40px;
+            gap: 32px;
+            min-height: auto;
           }
           .rightPanel {
-            height: 500px;
+            height: 450px;
           }
           .specs {
             grid-template-columns: 1fr;
@@ -413,32 +409,35 @@ export default function Tracks() {
             font-size: 2rem;
           }
           .rightPanel {
-            height: 400px;
+            height: 380px;
           }
           .navBtn {
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
+            width: 48px;
+            height: 48px;
+            font-size: 1.3rem;
+          }
+          .leftPanel {
+            padding: 32px;
           }
         }
       `}</style>
       
       <div className="bgOrb" style={{ 
-        width: '600px', 
-        height: '600px', 
+        width: '500px', 
+        height: '500px', 
         background: currentTrack.accent, 
-        top: '-300px', 
-        right: '-200px',
-        opacity: 0.15
+        top: '-250px', 
+        right: '-150px',
+        opacity: 0.12
       }} />
       <div className="bgOrb" style={{ 
-        width: '400px', 
-        height: '400px', 
+        width: '350px', 
+        height: '350px', 
         background: currentTrack.accent, 
-        bottom: '-200px', 
-        left: '-100px',
-        opacity: 0.1,
-        animationDelay: '2s'
+        bottom: '-175px', 
+        left: '-75px',
+        opacity: 0.08,
+        animationDelay: '3s'
       }} />
 
       <div className="container">

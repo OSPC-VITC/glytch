@@ -87,20 +87,20 @@ interface InfoCardProps {
 const InfoCard = memo(({ card, index, isHovered, onHover }: InfoCardProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.6 }}
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ delay: index * 0.15, duration: 0.7, type: "spring" }}
       className="relative transition-all duration-500 ease-out cursor-pointer"
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
       style={{
-        transform: isHovered ? 'translateY(-8px)' : 'translateY(0px)'
+        transform: isHovered ? 'scale(1.03) rotate(0.5deg)' : 'scale(1) rotate(0deg)'
       }}
     >
       <div
         className={cn(
-          'relative min-h-[380px] rounded-xl overflow-hidden transition-all duration-500',
-          'bg-gradient-to-b from-black via-slate-950 to-black',
+          'relative min-h-[340px] rounded-2xl overflow-hidden transition-all duration-500',
+          'bg-gradient-to-br from-black via-slate-950 to-black',
           'border border-white/20',
           isHovered && 'border-white/30'
         )}
@@ -114,8 +114,8 @@ const InfoCard = memo(({ card, index, isHovered, onHover }: InfoCardProps) => {
         <div
           className="absolute inset-0 transition-opacity duration-700"
           style={{
-            background: `radial-gradient(circle at 50% 0%, ${card.color}40 0%, transparent 60%)`,
-            opacity: isHovered ? 0.4 : 0.2
+            background: `radial-gradient(circle at 30% 20%, ${card.color}40 0%, transparent 70%)`,
+            opacity: isHovered ? 0.5 : 0.25
           }}
         />
 
@@ -147,20 +147,20 @@ const InfoCard = memo(({ card, index, isHovered, onHover }: InfoCardProps) => {
 
         {/* Content */}
         <div className="relative z-10 h-full flex flex-col p-6 md:p-7">
-          {/* Header */}
-          <div className="flex items-center mb-6">
+          {/* Header with Icon on Top */}
+          <div className="flex flex-col items-center text-center mb-6">
             <div 
               className={cn(
-                'rounded-xl flex items-center justify-center mr-3 w-12 h-12 border-2 transition-all duration-500',
+                'rounded-2xl flex items-center justify-center mb-4 w-16 h-16 border-2 transition-all duration-500',
                 'bg-black/80'
               )}
               style={{ 
                 borderColor: isHovered ? card.color : 'rgba(255,255,255,0.2)',
-                boxShadow: isHovered ? `0 0 20px ${card.color}80` : 'none',
-                transform: isHovered ? 'rotate(12deg)' : 'rotate(0deg)'
+                boxShadow: isHovered ? `0 0 25px ${card.color}80` : 'none',
+                transform: isHovered ? 'rotate(5deg) scale(1.1)' : 'rotate(0deg) scale(1)'
               }}
             >
-              <span className="text-xl">{card.icon}</span>
+              <span className="text-2xl">{card.icon}</span>
             </div>
             <h3
               className="text-xl md:text-2xl font-bold tracking-tight transition-all duration-300 text-[#f2f2f2]"
@@ -173,13 +173,13 @@ const InfoCard = memo(({ card, index, isHovered, onHover }: InfoCardProps) => {
           </div>
           
           {/* Content */}
-          <div className="flex-1 space-y-4">
+          <div className="flex-1 space-y-3.5">
             {card.items.map((item, itemIndex) => (
               <motion.div 
                 key={itemIndex} 
                 className="flex items-start space-x-3"
                 initial={{ x: 0 }}
-                animate={{ x: isHovered ? 4 : 0 }}
+                animate={{ x: isHovered ? 6 : 0 }}
                 transition={{ 
                   duration: 0.3,
                   delay: isHovered ? itemIndex * 0.05 : 0
@@ -204,17 +204,17 @@ const InfoCard = memo(({ card, index, isHovered, onHover }: InfoCardProps) => {
 
           {/* Corner Accents */}
           <div 
-            className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 rounded-tl-xl transition-opacity duration-300"
+            className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 rounded-tl-2xl transition-opacity duration-300"
             style={{ 
               borderColor: card.color,
-              opacity: isHovered ? 0.6 : 0.3
+              opacity: isHovered ? 0.7 : 0.35
             }}
           />
           <div 
-            className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 rounded-br-xl transition-opacity duration-300"
+            className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 rounded-br-2xl transition-opacity duration-300"
             style={{ 
               borderColor: card.color,
-              opacity: isHovered ? 0.6 : 0.3
+              opacity: isHovered ? 0.7 : 0.35
             }}
           />
         </div>
@@ -230,78 +230,72 @@ export default function About() {
   return (
     <section 
       id="about" 
-      className="relative py-10 scroll-mt-32 overflow-hidden bg-black/70"
+      className="relative py-16 md:py-20 scroll-mt-32 overflow-hidden bg-black/70"
     >
       {/* Background Gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
-          className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full opacity-20 blur-[120px]"
+          className="absolute top-1/3 left-1/3 w-[700px] h-[700px] rounded-full opacity-15 blur-[140px]"
           style={{
-            background: 'radial-gradient(circle, rgba(255, 0, 128, 0.4) 0%, transparent 70%)',
-            animation: 'float-bg 20s ease-in-out infinite'
+            background: 'radial-gradient(circle, rgba(255, 0, 128, 0.5) 0%, transparent 70%)',
+            animation: 'float-bg 22s ease-in-out infinite'
           }}
         />
         <div 
-          className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] rounded-full opacity-20 blur-[120px]"
+          className="absolute bottom-1/3 right-1/3 w-[700px] h-[700px] rounded-full opacity-15 blur-[140px]"
           style={{
-            background: 'radial-gradient(circle, rgba(255, 64, 0, 0.4) 0%, transparent 70%)',
-            animation: 'float-bg 20s ease-in-out infinite',
-            animationDelay: '10s'
+            background: 'radial-gradient(circle, rgba(128, 0, 255, 0.5) 0%, transparent 70%)',
+            animation: 'float-bg 22s ease-in-out infinite',
+            animationDelay: '11s'
           }}
         />
       </div>
 
       <div className="container mx-auto px-6 relative z-10 max-w-7xl">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
-            About GLYTCH
-          </h1>
-          <p className="text-slate-400 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-            <span className="font-bold text-transparent bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text">24-hour</span> in‑person hackathon where builders explore ideas at the edge —
-            <span className="text-transparent bg-gradient-to-r from-orange-400 via-pink-500 to-purple-500 bg-clip-text font-semibold"> fast, focused, fearlessly.</span>
-          </p>
-        </div>
+        {/* Header - Centered */}
+        <div className="mb-16 md:mb-20">
+          <div className="text-center mb-12">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
+              About GLYTCH
+            </h1>
+            <p className="text-slate-400 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
+              <span className="font-bold text-transparent bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text">24-hour</span> in‑person hackathon where builders explore ideas at the edge —
+              <span className="text-transparent bg-gradient-to-r from-orange-400 via-pink-500 to-purple-500 bg-clip-text font-semibold"> fast, focused, fearlessly.</span>
+            </p>
+          </div>
 
-        {/* Stats Ticker */}
-        <div className="mb-16 overflow-hidden">
-          <motion.div 
-            className="flex"
-            animate={{ x: [0, -50 + "%"] }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          >
-            {[...stats, ...stats].map((stat, index) => (
-              <div key={index} className="flex-shrink-0 mx-3 md:mx-4">
-                <div
-                  className="bg-gradient-to-b from-black via-slate-950 to-black border rounded-xl p-4 md:p-5 w-32 md:w-36 h-20 md:h-24 transition-all duration-500"
-                  style={{
-                    borderColor: `${stat.color}40`,
-                    boxShadow: `0 0 20px ${stat.color}40, inset 0 1px 0 rgba(255,255,255,0.05)`,
-                  }}
-                >
-                  <div className="text-center h-full flex flex-col justify-center">
-                    <div 
-                      className="text-xs uppercase tracking-wider font-bold mb-1"
-                      style={{ color: stat.color }}
-                    >
-                      {stat.k}
-                    </div>
-                    <div className="font-black text-sm md:text-base text-white">
-                      {stat.v}
-                    </div>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
+            {stats.map((stat, index) => (
+              <motion.div 
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-gradient-to-b from-black via-slate-950 to-black border rounded-xl p-4 transition-all duration-500 hover:scale-105"
+                style={{
+                  borderColor: `${stat.color}40`,
+                  boxShadow: `0 0 20px ${stat.color}40, inset 0 1px 0 rgba(255,255,255,0.05)`,
+                }}
+              >
+                <div className="text-center">
+                  <div 
+                    className="text-xs uppercase tracking-wider font-bold mb-2"
+                    style={{ color: stat.color }}
+                  >
+                    {stat.k}
+                  </div>
+                  <div className="font-black text-base text-white">
+                    {stat.v}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        {/* Cards Grid - 2x2 Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10">
           {cards.map((card, index) => (
             <InfoCard
               key={index}

@@ -276,3 +276,9 @@ body, p, span, a, h1, h2, h3, h4, h5, h6 {
   body { @apply bg-background text-foreground m-0; }
   html { scroll-behavior: smooth; }
 }
+
+@media (max-width: 768px) {
+  iframe[src*="devfolio.co"] {
+    display: none !important;
+  }
+}

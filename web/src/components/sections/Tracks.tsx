@@ -29,7 +29,7 @@ const DATA: Track[] = [
     ],
     badges: ["UPI Integration", "Secure", "Scalable"],
     background: "url('https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2070&auto=format&fit=crop')",
-    accent: "#ff0080",
+    accent: "#ec4899",
   },
   {
     id: "health-ed",
@@ -44,7 +44,7 @@ const DATA: Track[] = [
     ],
     badges: ["AI-Powered", "Privacy-First", "Accessible"],
     background: "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop')",
-    accent: "#00d4ff",
+    accent: "#a855f7",
   },
   {
     id: "retail-saas-mobility",
@@ -59,7 +59,7 @@ const DATA: Track[] = [
     ],
     badges: ["IoT-Ready", "Real-time", "Mobile-First"],
     background: "url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop')",
-    accent: "#ff6b00",
+    accent: "#ec4899",
   },
   {
     id: "agri-sdg",
@@ -74,7 +74,7 @@ const DATA: Track[] = [
     ],
     badges: ["Sustainable", "Data-Driven", "Impact"],
     background: "url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=2070&auto=format&fit=crop')",
-    accent: "#7ed321",
+    accent: "#a855f7",
   },
   {
     id: "open",
@@ -89,7 +89,7 @@ const DATA: Track[] = [
     ],
     badges: ["Innovative", "Disruptive", "Moonshot"],
     background: "url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop')",
-    accent: "#bd10e0",
+    accent: "#ec4899",
   },
 ];
 
@@ -127,8 +127,8 @@ export default function Tracks() {
     <section id="tracks" className="relative py-10 scroll-mt-32 overflow-hidden bg-black/70">
       <style jsx>{`
         @keyframes pulse {
-          0%, 100% { opacity: 0.2; }
-          50% { opacity: 0.35; }
+          0%, 100% { opacity: 0.15; }
+          50% { opacity: 0.25; }
         }
         @keyframes slideInLeft {
           from { opacity: 0; transform: translateX(-20px); }
@@ -145,8 +145,8 @@ export default function Tracks() {
         .bgOrb {
           position: absolute;
           border-radius: 50%;
-          filter: blur(100px);
-          animation: pulse 6s ease-in-out infinite;
+          filter: blur(120px);
+          animation: pulse 8s ease-in-out infinite;
           pointer-events: none;
           will-change: opacity;
         }
@@ -164,10 +164,7 @@ export default function Tracks() {
         .title {
           font-size: 4rem;
           font-weight: 900;
-          background: #fff;
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
+          color: white;
           margin: 0;
           letter-spacing: -2px;
         }
@@ -182,24 +179,26 @@ export default function Tracks() {
           display: flex;
           flex-direction: column;
           gap: 28px;
-          background: rgba(255, 255, 255, 0.02);
+          background: rgba(168, 85, 247, 0.03);
           padding: 40px;
           border-radius: 24px;
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(168, 85, 247, 0.2);
+          backdrop-filter: blur(10px);
           will-change: transform;
           transition: transform 0.3s ease-out;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         .numberBadge {
           font-size: 7rem;
           font-weight: 900;
           line-height: 1;
-          background: linear-gradient(135deg, ${currentTrack.accent} 0%, rgba(255,255,255,0.4) 100%);
+          background: linear-gradient(135deg, ${currentTrack.accent} 0%, rgba(255,255,255,0.6) 100%);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
           animation: fadeIn 0.4s ease-out;
           position: relative;
-          filter: drop-shadow(0 0 30px ${currentTrack.accent}60);
+          filter: drop-shadow(0 0 30px ${currentTrack.accent}80);
         }
         .trackMeta {
           animation: slideInLeft 0.5s ease-out both;
@@ -211,11 +210,15 @@ export default function Tracks() {
           letter-spacing: 2px;
           font-weight: 700;
           margin-bottom: 12px;
+          filter: drop-shadow(0 0 8px ${currentTrack.accent}60);
         }
         .trackName {
           font-size: 2.5rem;
           font-weight: 800;
-          color: white;
+          background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.8) 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
           line-height: 1.1;
           margin: 0 0 12px 0;
           letter-spacing: -1px;
@@ -233,8 +236,8 @@ export default function Tracks() {
         .navBtn {
           width: 56px;
           height: 56px;
-          border: 2px solid ${currentTrack.accent}40;
-          background: rgba(0, 0, 0, 0.4);
+          border: 2px solid ${currentTrack.accent}50;
+          background: rgba(168, 85, 247, 0.1);
           backdrop-filter: blur(10px);
           border-radius: 50%;
           color: ${currentTrack.accent};
@@ -246,9 +249,10 @@ export default function Tracks() {
           justify-content: center;
         }
         .navBtn:hover {
-          background: ${currentTrack.accent}20;
+          background: ${currentTrack.accent}30;
           border-color: ${currentTrack.accent};
           transform: scale(1.08);
+          box-shadow: 0 0 20px ${currentTrack.accent}60;
         }
         .navBtn:active {
           transform: scale(0.95);
@@ -269,17 +273,18 @@ export default function Tracks() {
           background-image: ${currentTrack.background};
           background-size: cover;
           background-position: center;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px ${currentTrack.accent}30;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px ${currentTrack.accent}40;
           transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           will-change: transform;
         }
         .imageContainer:hover {
           transform: scale(1.015);
+          box-shadow: 0 25px 70px rgba(0,0,0,0.7), 0 0 0 1px ${currentTrack.accent}60;
         }
         .imageOverlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, ${currentTrack.accent}15 0%, transparent 50%, rgba(0,0,0,0.85) 100%);
+          background: linear-gradient(135deg, ${currentTrack.accent}20 0%, transparent 50%, rgba(10,6,18,0.9) 100%);
         }
         .contentOverlay {
           position: absolute;
@@ -287,7 +292,7 @@ export default function Tracks() {
           left: 0;
           right: 0;
           padding: 32px;
-          background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+          background: linear-gradient(to top, rgba(10,6,18,0.98), transparent);
         }
         .specs {
           display: grid;
@@ -296,17 +301,18 @@ export default function Tracks() {
           margin-bottom: 20px;
         }
         .spec {
-          background: rgba(0, 0, 0, 0.6);
+          background: rgba(168, 85, 247, 0.08);
           backdrop-filter: blur(10px);
-          border: 1px solid ${currentTrack.accent}30;
+          border: 1px solid ${currentTrack.accent}40;
           border-radius: 12px;
           padding: 14px;
           transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .spec:hover {
-          background: rgba(0, 0, 0, 0.8);
+          background: rgba(168, 85, 247, 0.15);
           border-color: ${currentTrack.accent};
           transform: translateY(-3px);
+          box-shadow: 0 8px 20px ${currentTrack.accent}30;
         }
         .specLabel {
           font-size: 0.7rem;
@@ -318,7 +324,7 @@ export default function Tracks() {
         }
         .specValue {
           font-size: 0.85rem;
-          color: white;
+          color: rgba(255, 255, 255, 0.9);
           font-weight: 500;
           line-height: 1.3;
         }
@@ -329,8 +335,8 @@ export default function Tracks() {
         }
         .badge {
           padding: 8px 16px;
-          background: ${currentTrack.accent}20;
-          border: 1px solid ${currentTrack.accent}60;
+          background: ${currentTrack.accent}25;
+          border: 1px solid ${currentTrack.accent}70;
           border-radius: 20px;
           color: white;
           font-size: 0.8rem;
@@ -339,9 +345,9 @@ export default function Tracks() {
           backdrop-filter: blur(10px);
         }
         .badge:hover {
-          background: ${currentTrack.accent}40;
+          background: ${currentTrack.accent}50;
           transform: scale(1.05);
-          box-shadow: 0 4px 12px ${currentTrack.accent}40;
+          box-shadow: 0 4px 16px ${currentTrack.accent}60;
         }
         .dots {
           display: flex;
@@ -352,7 +358,7 @@ export default function Tracks() {
         .dot {
           width: 40px;
           height: 3px;
-          background: rgba(255, 255, 255, 0.2);
+          background: rgba(168, 85, 247, 0.2);
           border-radius: 2px;
           cursor: pointer;
           transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -370,12 +376,13 @@ export default function Tracks() {
           transform: scaleX(0);
           transform-origin: left;
           transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 0 10px ${currentTrack.accent};
         }
         .dot.active::before {
           transform: scaleX(1);
         }
         .dot:hover {
-          background: rgba(255, 255, 255, 0.35);
+          background: rgba(168, 85, 247, 0.4);
         }
         @media (max-width: 1024px) {
           .mainContent {
@@ -415,21 +422,21 @@ export default function Tracks() {
       `}</style>
       
       <div className="bgOrb" style={{ 
-        width: '500px', 
-        height: '500px', 
-        background: currentTrack.accent, 
-        top: '-250px', 
-        right: '-150px',
-        opacity: 0.12
+        width: '600px', 
+        height: '600px', 
+        background: 'radial-gradient(circle, #ec4899 0%, #a855f7 100%)', 
+        top: '-300px', 
+        right: '-200px',
+        opacity: 0.15
       }} />
       <div className="bgOrb" style={{ 
-        width: '350px', 
-        height: '350px', 
-        background: currentTrack.accent, 
-        bottom: '-175px', 
-        left: '-75px',
-        opacity: 0.08,
-        animationDelay: '3s'
+        width: '500px', 
+        height: '500px', 
+        background: 'radial-gradient(circle, #a855f7 0%, #ec4899 100%)', 
+        bottom: '-250px', 
+        left: '-150px',
+        opacity: 0.12,
+        animationDelay: '4s'
       }} />
 
       <div className="container">

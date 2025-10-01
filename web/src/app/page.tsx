@@ -3,14 +3,15 @@
 import { Suspense, lazy, useEffect, useState, useCallback, useMemo } from "react";
 import DemoOne from "@/components/ui/demo-one";
 import Loader from "@/components/ui/Loader";
-import Organizers from "@/components/sections/Organisers";
-import Partners from "@/components/sections/Partners";
-import Judges from "@/components/sections/Judges";
-import Tracks from "@/components/sections/Tracks";
 
 const About = lazy(() => import("@/components/sections/About"));
 const Prizes = lazy(() => import("@/components/sections/Prizes"));
 const FAQ = lazy(() => import("@/components/sections/FAQ"));
+const Sponsors = lazy(() => import("@/components/sections/Sponsors"));
+const Tracks = lazy(() => import("@/components/sections/Tracks"));
+const Judges = lazy(() => import("@/components/sections/Judges"));
+const Partners = lazy(() => import("@/components/sections/Partners"));
+const Organizers = lazy(() => import("@/components/sections/Organisers"));
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({
@@ -21,7 +22,7 @@ export default function Home() {
   });
 
   // Memoize target date to prevent recalculation
-  const targetDate = useMemo(() => new Date("2025-09-24T00:00:00").getTime(), []);
+  const targetDate = useMemo(() => new Date("2025-11-03T00:00:00").getTime(), []);
 
   // Optimized countdown calculation
   const calculateTimeLeft = useCallback(() => {
@@ -141,14 +142,9 @@ export default function Home() {
         </div>
 
         <div id="sponsors" className="scroll-mt-24">
-          <div className="bg-black/30 backdrop-blur-sm rounded-2xl border border-purple-500/30 p-8">
-            <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 mb-4">
-              Sponsors
-            </h2>
-            <p className="text-white/80 text-lg leading-relaxed">
-              Thank you to our sponsors!
-            </p>
-          </div>
+          <Suspense fallback={<Loader size={24} />}>
+            <Sponsors />
+          </Suspense>
         </div>
 
         <div id="faq" className="scroll-mt-24">

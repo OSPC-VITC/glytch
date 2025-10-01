@@ -12,6 +12,7 @@ type Track = {
   specs: Spec[];
   badges: string[];
   background: string;
+  accent: string;
 };
 
 const DATA: Track[] = [
@@ -27,8 +28,8 @@ const DATA: Track[] = [
       { label: "Challenge", value: "Build a secure, instant payment solution" },
     ],
     badges: ["UPI Integration", "Secure", "Scalable"],
-    background:
-      "url('https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2070&auto=format&fit=crop')",
+    background: "url('https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2070&auto=format&fit=crop')",
+    accent: "#00ff88",
   },
   {
     id: "health-ed",
@@ -42,8 +43,8 @@ const DATA: Track[] = [
       { label: "Challenge", value: "Create tools that improve healthcare/education" },
     ],
     badges: ["AI-Powered", "Privacy-First", "Accessible"],
-    background:
-      "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop')",
+    background: "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop')",
+    accent: "#00d4ff",
   },
   {
     id: "retail-saas-mobility",
@@ -57,8 +58,8 @@ const DATA: Track[] = [
       { label: "Challenge", value: "Build solutions for retail, SaaS or mobility" },
     ],
     badges: ["IoT-Ready", "Real-time", "Mobile-First"],
-    background:
-      "url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop')",
+    background: "url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop')",
+    accent: "#ff6b00",
   },
   {
     id: "agri-sdg",
@@ -72,8 +73,8 @@ const DATA: Track[] = [
       { label: "Challenge", value: "Create solutions for sustainable development" },
     ],
     badges: ["Sustainable", "Data-Driven", "Impact"],
-    background:
-      "url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=2070&auto=format&fit=crop')",
+    background: "url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=2070&auto=format&fit=crop')",
+    accent: "#7ed321",
   },
   {
     id: "open",
@@ -87,380 +88,410 @@ const DATA: Track[] = [
       { label: "Challenge", value: "Build something unique that doesn't fit other tracks" },
     ],
     badges: ["Innovative", "Disruptive", "Moonshot"],
-    background:
-      "url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop')",
+    background: "url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop')",
+    accent: "#bd10e0",
   },
 ];
 
 export default function Tracks() {
-  const [active, setActive] = useState<number>(-1);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const rafRef = useRef<number | null>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const setActiveSlide = useCallback((index: number) => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => {
-      setActive((curr) => (curr === index ? -1 : index));
-    });
-  }, []);
+  const goToSlide = useCallback((index: number) => {
+    if (index === currentIndex) return;
+    setCurrentIndex(index);
+  }, [currentIndex]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(() => {
-        if (e.key === "ArrowLeft") {
-          setActive((curr) => (curr === -1 ? DATA.length - 1 : (curr - 1 + DATA.length) % DATA.length));
-        }
-        if (e.key === "ArrowRight") {
-          setActive((curr) => (curr === -1 ? 0 : (curr + 1) % DATA.length));
-        }
-      });
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') goToSlide((currentIndex - 1 + DATA.length) % DATA.length);
+      if (e.key === 'ArrowRight') goToSlide((currentIndex + 1) % DATA.length);
     };
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, goToSlide]);
+
+  const nextSlide = () => goToSlide((currentIndex + 1) % DATA.length);
+  const prevSlide = () => goToSlide((currentIndex - 1 + DATA.length) % DATA.length);
+
+  const currentTrack = DATA[currentIndex];
 
   return (
-    <section id="tracks" style={{ minHeight: "100vh", background: "#000", padding: "48px 16px" }}>
+    <section id="tracks" style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #000 0%, #0a0a0a 100%)', padding: '80px 20px', position: 'relative', overflow: 'hidden' }}>
       <style jsx>{`
-        .sliderContainer {
-          position: relative;
-          max-width: 1800px;
-          margin: 0 auto;
-          padding: 0 16px;
+        @keyframes pulse {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.5; }
         }
-        .accordionSlider {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-          height: auto;
+        @keyframes slideInLeft {
+          from { opacity: 0; transform: translateX(-30px); }
+          to { opacity: 1; transform: translateX(0); }
         }
-        @media (min-width: 768px) {
-          .accordionSlider {
-            flex-direction: row;
-            height: 650px;
-            gap: 8px;
-          }
+        @keyframes slideInRight {
+          from { opacity: 0; transform: translateX(30px); }
+          to { opacity: 1; transform: translateX(0); }
         }
-        .slide {
-          position: relative;
-          flex: 0.7;
-          height: 140px;
-          background-size: cover;
-          background-position: center;
-          border-radius: 16px;
-          overflow: hidden;
-          cursor: pointer;
-          transition: all 0.5s ease-in-out;
-          border: 2px solid rgba(255, 0, 128, 0.5);
-          box-shadow: 0 0 40px rgba(255, 0, 128, 0.3);
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        @media (min-width: 768px) {
-          .slide {
-            height: 100%;
-          }
-        }
-        .slide.active {
-          flex: 4.5;
-          height: 650px;
-        }
-        .mobileSlide {
-          height: 160px;
-        }
-        .mobileSlide.active {
-          height: 600px;
-        }
-        .overlay {
+        .bgOrb {
           position: absolute;
-          inset: 0;
-          background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.9));
-          transition: opacity 0.5s ease;
-        }
-        .slide.active .overlay {
-          opacity: 0.85;
-        }
-        .slideContent {
-          position: relative;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          padding: 24px;
-          z-index: 10;
-        }
-        @media (min-width: 768px) {
-          .slideContent {
-            padding: 32px;
-          }
-        }
-        .slideNumber {
-          position: absolute;
-          top: 16px;
-          right: 16px;
-          font-size: 80px;
-          font-weight: 900;
-          color: rgba(255, 255, 255, 0.05);
+          border-radius: 50%;
+          filter: blur(80px);
+          animation: pulse 4s ease-in-out infinite;
           pointer-events: none;
-          transition: all 0.5s ease;
+          will-change: opacity;
         }
-        @media (min-width: 768px) {
-          .slideNumber {
-            font-size: 100px;
-          }
+        .container {
+          max-width: 1400px;
+          margin: 0 auto;
+          position: relative;
+          z-index: 1;
         }
-        .active .slideNumber {
-          top: 24px;
-          right: 24px;
-          font-size: 150px;
+        .header {
+          text-align: center;
+          margin-bottom: 60px;
         }
-        @media (min-width: 768px) {
-          .active .slideNumber {
-            font-size: 200px;
-          }
+        .subtitle {
+          color: rgba(255, 255, 255, 0.5);
+          font-size: 0.9rem;
+          letter-spacing: 3px;
+          text-transform: uppercase;
+          margin-bottom: 16px;
+          font-weight: 600;
         }
-        .carBrand {
-          font-size: 18px;
-          font-weight: 700;
-          color: white;
-          margin-bottom: 8px;
-          transition: font-size 0.5s ease;
-        }
-        @media (min-width: 768px) {
-          .carBrand {
-            font-size: 24px;
-          }
-        }
-        .active .carBrand,
-        .mobileSlide .carBrand {
-          font-size: 24px;
-        }
-        @media (min-width: 768px) {
-          .active .carBrand {
-            font-size: 36px;
-          }
-        }
-        .carName {
-          font-size: 20px;
-          font-weight: 700;
-          background: linear-gradient(to right, #ff4081, #ff9100, #e040fb);
+        .title {
+          font-size: 4rem;
+          font-weight: 900;
+          background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
-          margin-bottom: 8px;
-          opacity: 0;
-          transform: translateY(-10px);
-          transition: opacity 0.4s ease, transform 0.4s ease;
+          margin: 0;
+          letter-spacing: -2px;
         }
-        .active .carName,
-        .mobileSlide .carName {
-          opacity: 1;
-          transform: translateY(0);
+        .mainContent {
+          display: grid;
+          grid-template-columns: 1fr 1.2fr;
+          gap: 40px;
+          align-items: center;
+          min-height: 600px;
         }
-        @media (min-width: 768px) {
-          .carName {
-            font-size: 28px;
-          }
-          .active .carName {
-            font-size: 32px;
-          }
-        }
-        .carSubtitle {
-          font-size: 14px;
-          color: #ff80ab;
-          font-weight: 500;
-          margin-bottom: 16px;
-          opacity: 0;
-          transform: translateY(-10px);
-          transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-        .active .carSubtitle,
-        .mobileSlide .carSubtitle {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        @media (min-width: 768px) {
-          .carSubtitle {
-            font-size: 16px;
-          }
-        }
-        .carSpecs {
+        .leftPanel {
           display: flex;
           flex-direction: column;
-          gap: 12px;
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+          gap: 32px;
+          background: rgba(255, 255, 255, 0.02);
+          padding: 48px;
+          border-radius: 32px;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          will-change: transform, opacity;
         }
-        .active .carSpecs,
-        .mobileSlide .carSpecs {
-          opacity: 1;
-          transform: translateY(0);
+        .numberBadge {
+          font-size: 8rem;
+          font-weight: 900;
+          line-height: 1;
+          background: linear-gradient(135deg, ${currentTrack.accent} 0%, rgba(255,255,255,0.3) 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          text-shadow: 0 0 80px ${currentTrack.accent}80;
+          animation: fadeIn 0.6s ease-out;
+          position: relative;
         }
-        .specRow {
-          background: rgba(0, 0, 0, 0.7);
-          border: 1px solid rgba(255, 0, 128, 0.4);
-          border-radius: 8px;
-          padding: 12px 16px;
-          box-shadow: 0 0 20px rgba(255, 0, 128, 0.3);
-        }
-        .specLabel {
-          font-size: 12px;
-          font-weight: 700;
-          color: #ff80ab;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-        }
-        .specValue {
-          font-size: 14px;
-          color: rgba(255, 255, 255, 0.9);
-          margin-left: 12px;
-        }
-        .performanceBadges {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          padding-top: 16px;
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s;
-        }
-        .active .performanceBadges,
-        .mobileSlide .performanceBadges {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        .badge {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 8px 16px;
-          background: linear-gradient(to right, rgba(255, 0, 128, 0.6), rgba(224, 64, 251, 0.6));
-          border: 1px solid rgba(255, 0, 128, 0.5);
-          border-radius: 9999px;
-          color: #ffccbc;
-          font-size: 12px;
-          font-weight: 600;
-          box-shadow: 0 0 15px rgba(255, 0, 128, 0.4);
-          transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-        .badgeIcon {
-          width: 10px;
-          height: 10px;
-          background: #ff4081;
-          border-radius: 50%;
-        }
-        .addButton {
+        .numberBadge::before {
+          content: '${currentTrack.number}';
           position: absolute;
-          bottom: 24px;
-          right: 24px;
-          width: 48px;
-          height: 48px;
+          top: 0;
+          left: 0;
+          z-index: -1;
+          filter: blur(20px);
+          opacity: 0.5;
+        }
+        .trackMeta {
+          animation: slideInLeft 0.6s ease-out 0.1s both;
+        }
+        .brand {
+          font-size: 0.85rem;
+          color: ${currentTrack.accent};
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          font-weight: 700;
+          margin-bottom: 12px;
+        }
+        .trackName {
+          font-size: 3rem;
+          font-weight: 800;
+          color: white;
+          line-height: 1.1;
+          margin: 0 0 16px 0;
+          letter-spacing: -1px;
+        }
+        .trackSubtitle {
+          font-size: 1.1rem;
+          color: rgba(255, 255, 255, 0.6);
+          line-height: 1.6;
+        }
+        .navigation {
+          display: flex;
+          gap: 16px;
+          animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+        .navBtn {
+          width: 60px;
+          height: 60px;
+          border: 2px solid ${currentTrack.accent}40;
+          background: rgba(0, 0, 0, 0.4);
+          backdrop-filter: blur(10px);
           border-radius: 50%;
-          border: 2px solid rgba(255, 0, 128, 0.6);
+          color: ${currentTrack.accent};
+          font-size: 1.5rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.5s ease;
         }
-        .addButton::before {
-          content: "";
-          width: 12px;
-          height: 12px;
-          background: linear-gradient(to right, #ff4081, #e040fb);
-          border-radius: 50%;
-        }
-        .active .addButton,
-        .mobileSlide .addButton {
+        .navBtn:hover {
+          background: ${currentTrack.accent}20;
+          border-color: ${currentTrack.accent};
           transform: scale(1.1);
-          border-color: #ff4081;
-          box-shadow: 0 0 20px rgba(255, 0, 128, 0.6);
         }
-        .instructions {
-          text-align: center;
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 14px;
-          margin-top: 24px;
+        .rightPanel {
+          position: relative;
+          height: 600px;
+          animation: slideInRight 0.6s ease-out 0.2s both;
+        }
+        .imageContainer {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: 32px;
+          overflow: hidden;
+          background-image: ${currentTrack.background};
+          background-size: cover;
+          background-position: center;
+          box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 1px ${currentTrack.accent}30;
+          transition: transform 0.4s ease-out;
+          will-change: transform;
+        }
+        .imageContainer:hover {
+          transform: scale(1.02);
+        }
+        .imageOverlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, ${currentTrack.accent}20 0%, transparent 50%, rgba(0,0,0,0.8) 100%);
+        }
+        .contentOverlay {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 40px;
+          background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+        }
+        .specs {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+          margin-bottom: 24px;
+        }
+        .spec {
+          background: rgba(0, 0, 0, 0.6);
+          backdrop-filter: blur(10px);
+          border: 1px solid ${currentTrack.accent}30;
+          border-radius: 16px;
+          padding: 16px;
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .spec:hover {
+          background: rgba(0, 0, 0, 0.8);
+          border-color: ${currentTrack.accent};
+          transform: translateY(-4px);
+        }
+        .specLabel {
+          font-size: 0.75rem;
+          color: ${currentTrack.accent};
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          margin-bottom: 6px;
+          font-weight: 700;
+        }
+        .specValue {
+          font-size: 0.9rem;
+          color: white;
           font-weight: 500;
+          line-height: 1.4;
+        }
+        .badges {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+        .badge {
+          padding: 10px 20px;
+          background: ${currentTrack.accent}20;
+          border: 1px solid ${currentTrack.accent}60;
+          border-radius: 24px;
+          color: white;
+          font-size: 0.85rem;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+        }
+        .badge:hover {
+          background: ${currentTrack.accent}40;
+          transform: scale(1.05);
+          box-shadow: 0 4px 12px ${currentTrack.accent}40;
+        }
+        .dots {
+          display: flex;
+          justify-content: center;
+          gap: 16px;
+          margin-top: 60px;
+        }
+        .dot {
+          width: 48px;
+          height: 4px;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 2px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        .dot::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: ${currentTrack.accent};
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.3s ease;
+        }
+        .dot.active::before {
+          transform: scaleX(1);
+        }
+        .dot:hover {
+          background: rgba(255, 255, 255, 0.4);
+        }
+        @media (max-width: 1024px) {
+          .mainContent {
+            grid-template-columns: 1fr;
+            gap: 40px;
+          }
+          .rightPanel {
+            height: 500px;
+          }
+          .specs {
+            grid-template-columns: 1fr;
+          }
+        }
+        @media (max-width: 767px) {
+          .title {
+            font-size: 2.5rem;
+          }
+          .numberBadge {
+            font-size: 5rem;
+          }
+          .trackName {
+            font-size: 2rem;
+          }
+          .rightPanel {
+            height: 400px;
+          }
+          .navBtn {
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+          }
         }
       `}</style>
-      <h1
-        style={{
-          fontSize: "2.5rem",
-          fontWeight: 800,
-          textAlign: "center",
-          background: "linear-gradient(to right, #ff4081, #ff9100, #e040fb)",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          color: "transparent",
-          marginBottom: "3rem",
-          textShadow: "0 0 30px rgba(255, 0, 128, 0.7)",
-        }}
-      >
-        Tracks
-      </h1>
-      <div className="sliderContainer" onMouseLeave={() => !isMobile && setActive(-1)}>
-        <div className="accordionSlider">
-          {DATA.map((t, i) => {
-            const slideClass = `slide ${active === i ? "active" : ""} ${isMobile ? "mobileSlide" : ""}`;
+      
+      <div className="bgOrb" style={{ 
+        width: '600px', 
+        height: '600px', 
+        background: currentTrack.accent, 
+        top: '-300px', 
+        right: '-200px',
+        opacity: 0.15
+      }} />
+      <div className="bgOrb" style={{ 
+        width: '400px', 
+        height: '400px', 
+        background: currentTrack.accent, 
+        bottom: '-200px', 
+        left: '-100px',
+        opacity: 0.1,
+        animationDelay: '2s'
+      }} />
 
-            return (
-              <div
-                key={t.id}
-                className={slideClass}
-                style={{ backgroundImage: t.background }}
-                onMouseEnter={() => !isMobile && setActiveSlide(i)}
-                onClick={() => setActiveSlide(i)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === "Enter" && setActiveSlide(i)}
-                aria-pressed={active === i}
-              >
-                <div className="overlay" />
-                <div className="slideContent">
-                  <div className="slideNumber">{t.number}</div>
-                  <div className={`carBrand ${isMobile ? "mobileCarBrand" : ""}`}>{t.brand}</div>
-                  <div className={`carName ${isMobile ? "mobileCarName" : ""}`}>{t.name}</div>
-                  <div className="carSubtitle">{t.subtitle}</div>
-                  <div className="carSpecs">
-                    {t.specs.map((s) => (
-                      <div key={s.label} className="specRow">
-                        <span className="specLabel">{s.label}:</span>
-                        <span className="specValue">{s.value}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="performanceBadges">
-                    {t.badges.map((b, idx) => (
-                      <div
-                        key={b}
-                        className="badge"
-                        style={{ transitionDelay: active === i ? `${0.9 + idx * 0.1}s` : undefined }}
-                      >
-                        <div className="badgeIcon" />
-                        <span>{b}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="addButton" aria-hidden />
+      <div className="container">
+        <div className="header">
+          <div className="subtitle">Explore Challenge Domains</div>
+          <h1 className="title">Tracks</h1>
+        </div>
+
+        <div className="mainContent">
+          <div className="leftPanel">
+            <div className="numberBadge">{currentTrack.number}</div>
+            <div className="trackMeta">
+              <div className="brand">{currentTrack.brand}</div>
+              <h2 className="trackName">{currentTrack.name}</h2>
+              <p className="trackSubtitle">{currentTrack.subtitle}</p>
+            </div>
+            <div className="navigation">
+              <button className="navBtn" onClick={prevSlide} aria-label="Previous track">‹</button>
+              <button className="navBtn" onClick={nextSlide} aria-label="Next track">›</button>
+            </div>
+          </div>
+
+          <div className="rightPanel">
+            <div className="imageContainer">
+              <div className="imageOverlay" />
+              <div className="contentOverlay">
+                <div className="specs">
+                  {currentTrack.specs.map((spec) => (
+                    <div key={spec.label} className="spec">
+                      <div className="specLabel">{spec.label}</div>
+                      <div className="specValue">{spec.value}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="badges">
+                  {currentTrack.badges.map((badge) => (
+                    <div key={badge} className="badge">{badge}</div>
+                  ))}
                 </div>
               </div>
-            );
-          })}
+            </div>
+          </div>
         </div>
-        <div className="instructions">
-          {isMobile ? "Tap a track to view details" : "Hover over tracks to explore • Use arrow keys to navigate"}
+
+        <div className="dots">
+          {DATA.map((_, index) => (
+            <div
+              key={index}
+              className={`dot ${currentIndex === index ? 'active' : ''}`}
+              onClick={() => goToSlide(index)}
+              aria-label={`Go to track ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>

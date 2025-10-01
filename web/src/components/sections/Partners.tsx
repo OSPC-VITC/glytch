@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, memo } from "react";
+import React, { useState, memo, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 
 function cn(...classes: (string | boolean | undefined | null)[]): string {
@@ -77,18 +77,22 @@ const partners: Partner[] = [
   }
 ];
 
-const FloatingOrb = memo(({ delay, colors, index }: { delay: number; colors: string; index: number }) => (
-  <div
-    className="absolute w-1 h-1 rounded-full opacity-30"
-    style={{
-      left: `${(index * 23 + 15) % 90}%`,
-      top: `${(index * 37 + 10) % 80}%`,
-      background: colors,
-      animation: `float-orb ${4 + (index % 2)}s ease-in-out infinite`,
-      animationDelay: `${delay}s`
-    }}
-  />
-));
+const FloatingOrb = memo(({ delay, colors, index }: { delay: number; colors: string; index: number }) => {
+  const style = useMemo(() => ({
+    left: `${(index * 23 + 15) % 90}%`,
+    top: `${(index * 37 + 10) % 80}%`,
+    background: colors,
+    animation: `float-orb ${4 + (index % 2)}s ease-in-out infinite`,
+    animationDelay: `${delay}s`
+  }), [delay, colors, index]);
+
+  return (
+    <div
+      className="absolute w-1 h-1 rounded-full opacity-30"
+      style={style}
+    />
+  );
+});
 FloatingOrb.displayName = 'FloatingOrb';
 
 interface PartnerCardProps {
@@ -99,16 +103,45 @@ interface PartnerCardProps {
 }
 
 const PartnerCard = memo(({ partner, index, isHovered, onHover }: PartnerCardProps) => {
+  const handleMouseEnter = useCallback(() => onHover(true), [onHover]);
+  const handleMouseLeave = useCallback(() => onHover(false), [onHover]);
+
+  const boxShadow = useMemo(() => 
+    isHovered
+      ? `0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 50px ${partner.colors.glow}, inset 0 1px 0 rgba(255,255,255,0.1)`
+      : `0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 20px ${partner.colors.glow}, inset 0 1px 0 rgba(255,255,255,0.05)`,
+    [isHovered, partner.colors.glow]
+  );
+
+  const bgGradient = useMemo(() => ({
+    background: `radial-gradient(circle at 50% 0%, ${partner.colors.glow} 0%, transparent 60%)`,
+    opacity: isHovered ? 0.4 : 0.2
+  }), [isHovered, partner.colors.glow]);
+
+  const nameFilter = useMemo(() => 
+    isHovered ? `drop-shadow(0 0 20px ${partner.colors.glow})` : 'none',
+    [isHovered, partner.colors.glow]
+  );
+
+  const cornerStyle = useMemo(() => ({ 
+    borderColor: partner.colors.accent,
+    opacity: isHovered ? 0.6 : 0.3
+  }), [isHovered, partner.colors.accent]);
+
+  const orbKeys = useMemo(() => Array.from({ length: 5 }, (_, i) => `${partner.id}-orb-${i}`), [partner.id]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.15, duration: 0.6 }}
+      viewport={{ once: true, margin: "-50px" }}
       className="relative transition-all duration-500 ease-out cursor-pointer"
-      onMouseEnter={() => onHover(true)}
-      onMouseLeave={() => onHover(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       style={{
-        transform: isHovered ? 'translateY(-8px)' : 'translateY(0px)'
+        transform: isHovered ? 'translateY(-8px)' : 'translateY(0px)',
+        willChange: 'transform'
       }}
     >
       <div
@@ -119,22 +152,13 @@ const PartnerCard = memo(({ partner, index, isHovered, onHover }: PartnerCardPro
           partner.colors.border,
           isHovered && 'border-white/30'
         )}
-        style={{
-          boxShadow: isHovered
-            ? `0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 50px ${partner.colors.glow}, inset 0 1px 0 rgba(255,255,255,0.1)`
-            : `0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 20px ${partner.colors.glow}, inset 0 1px 0 rgba(255,255,255,0.05)`
-        }}
+        style={{ boxShadow }}
       >
-        {/* Background Gradient */}
         <div
-          className={cn('absolute inset-0 opacity-0 transition-opacity duration-700')}
-          style={{
-            background: `radial-gradient(circle at 50% 0%, ${partner.colors.glow} 0%, transparent 60%)`,
-            opacity: isHovered ? 0.4 : 0.2
-          }}
+          className="absolute inset-0 transition-opacity duration-700"
+          style={bgGradient}
         />
 
-        {/* Scan Line */}
         <div 
           className="absolute inset-0 opacity-20"
           style={{
@@ -143,14 +167,12 @@ const PartnerCard = memo(({ partner, index, isHovered, onHover }: PartnerCardPro
           }}
         />
 
-        {/* Floating Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(5)].map((_, i) => (
-            <FloatingOrb key={i} delay={i * 1.2} colors={partner.colors.accent} index={i + index * 5} />
+          {orbKeys.map((key, i) => (
+            <FloatingOrb key={key} delay={i * 1.2} colors={partner.colors.accent} index={i + index * 5} />
           ))}
         </div>
 
-        {/* Shimmer Effect */}
         <div 
           className={cn(
             'absolute inset-0 opacity-0 transition-opacity duration-500',
@@ -160,19 +182,14 @@ const PartnerCard = memo(({ partner, index, isHovered, onHover }: PartnerCardPro
           style={{ animation: isHovered ? 'shimmer 2s ease-in-out infinite' : 'none' }}
         />
 
-        {/* Content */}
         <div className="relative z-10 h-full flex flex-col justify-center p-8 text-center">
-          {/* Name */}
           <h3
             className="text-2xl md:text-3xl font-bold mb-4 tracking-tight transition-all duration-300 text-[#f2f2f2]"
-            style={{
-              filter: isHovered ? `drop-shadow(0 0 20px ${partner.colors.glow})` : 'none'
-            }}
+            style={{ filter: nameFilter }}
           >
             {partner.name}
           </h3>
 
-          {/* Description */}
           <p className={cn(
             'text-slate-400 text-sm leading-relaxed transition-colors duration-300',
             isHovered && 'text-slate-300'
@@ -180,34 +197,34 @@ const PartnerCard = memo(({ partner, index, isHovered, onHover }: PartnerCardPro
             {partner.description}
           </p>
 
-          {/* Corner Accents */}
           <div 
-            className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 rounded-tl-xl opacity-30 transition-opacity duration-300"
-            style={{ 
-              borderColor: partner.colors.accent,
-              opacity: isHovered ? 0.6 : 0.3
-            }}
+            className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 rounded-tl-xl transition-opacity duration-300"
+            style={cornerStyle}
           />
           <div 
-            className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 rounded-br-xl opacity-30 transition-opacity duration-300"
-            style={{ 
-              borderColor: partner.colors.accent,
-              opacity: isHovered ? 0.6 : 0.3
-            }}
+            className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 rounded-br-xl transition-opacity duration-300"
+            style={cornerStyle}
           />
         </div>
       </div>
     </motion.div>
   );
-});
+}, (prevProps, nextProps) => 
+  prevProps.partner.id === nextProps.partner.id &&
+  prevProps.isHovered === nextProps.isHovered &&
+  prevProps.index === nextProps.index
+);
 PartnerCard.displayName = 'PartnerCard';
 
 export default function Partners() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
+  const handleHover = useCallback((index: number) => (hovered: boolean) => {
+    setHoveredIndex(hovered ? index : null);
+  }, []);
+
   return (
     <section className="relative py-16 scroll-mt-32 overflow-hidden bg-black/70">
-      {/* Background Gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
           className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full opacity-20 blur-[120px]"
@@ -227,7 +244,6 @@ export default function Partners() {
       </div>
 
       <div className="container mx-auto px-6 relative z-10 max-w-7xl">
-        {/* Title Section */}
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
             Our Partners
@@ -240,7 +256,6 @@ export default function Partners() {
           </p>
         </div>
 
-        {/* Partners Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {partners.map((partner, index) => (
             <PartnerCard
@@ -248,7 +263,7 @@ export default function Partners() {
               partner={partner}
               index={index}
               isHovered={hoveredIndex === index}
-              onHover={(hovered) => setHoveredIndex(hovered ? index : null)}
+              onHover={handleHover(index)}
             />
           ))}
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo, useCallback } from "react";
 import * as THREE from "three";
 import { motion, useScroll, useTransform } from "framer-motion";
 
@@ -16,22 +16,17 @@ interface SceneRef {
   animationId: number;
 }
 
-export function SpiderWebAttack() {
+export const SpiderWebAttack = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<SceneRef | null>(null);
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const container = containerRef.current;
-
-    const vertexShader = `
+  const shaders = useMemo(() => ({
+    vertex: `
       void main() {
         gl_Position = vec4( position, 1.0 );
       }
-    `;
-
-    const fragmentShader = `
+    `,
+    fragment: `
       #define TWO_PI 6.2831853072
       #define PI 3.14159265359
 
@@ -247,8 +242,13 @@ export function SpiderWebAttack() {
         
         gl_FragColor = vec4(finalColor, 1.0);
       }
-    `;
+    `
+  }), []);
 
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const container = containerRef.current;
     const camera = new THREE.Camera();
     camera.position.z = 1;
 
@@ -263,15 +263,18 @@ export function SpiderWebAttack() {
 
     const material = new THREE.ShaderMaterial({
       uniforms: uniforms as unknown as Record<string, THREE.IUniform>,
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader,
+      vertexShader: shaders.vertex,
+      fragmentShader: shaders.fragment,
     });
 
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true,
+      powerPreference: "high-performance"
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     container.appendChild(renderer.domElement);
 
@@ -293,9 +296,9 @@ export function SpiderWebAttack() {
     window.addEventListener("resize", onWindowResize, false);
     window.addEventListener("mousemove", onMouseMove, false);
 
+    let animationId = 0;
     const animate = () => {
-      if (!sceneRef.current) return;
-      sceneRef.current.animationId = requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
       uniforms.time.value += 0.02;
       renderer.render(scene, camera);
     };
@@ -314,18 +317,18 @@ export function SpiderWebAttack() {
       window.removeEventListener("resize", onWindowResize);
       window.removeEventListener("mousemove", onMouseMove);
 
-      if (sceneRef.current) {
-        cancelAnimationFrame(sceneRef.current.animationId);
-        sceneRef.current.renderer.dispose();
-        geometry.dispose();
-        material.dispose();
-        
-        if (container?.contains(sceneRef.current.renderer.domElement)) {
-          container.removeChild(sceneRef.current.renderer.domElement);
-        }
+      cancelAnimationFrame(animationId);
+      renderer.dispose();
+      geometry.dispose();
+      material.dispose();
+      
+      if (container?.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
       }
+
+      sceneRef.current = null;
     };
-  }, []);
+  }, [shaders]);
 
   return (
     <div
@@ -334,32 +337,41 @@ export function SpiderWebAttack() {
       style={{ background: "#000000", overflow: "hidden" }}
     />
   );
-}
+};
 
 export default function DemoTwo() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const { scrollYProgress } = useScroll({ 
+    target: sectionRef, 
+    offset: ["start start", "end start"] 
+  });
+  
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.85]);
   const radius = useTransform(scrollYProgress, [0, 0.5], ["0px", "40px"]);
 
+  const containerStyle = useMemo(() => ({
+    scale,
+    borderRadius: radius
+  }), [scale, radius]);
+
   return (
-  <motion.div
-    ref={sectionRef}
-    style={{ scale, borderRadius: radius }}
-    className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden"
-  >
-    <SpiderWebAttack />
-    <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-      <motion.div className="glytch-wrapper">
-        <motion.div
-          className="text-8xl font-extrabold tracking-widest glytch"
-          data-text="GLYTCH"
-        >
-          GLYTCH
+    <motion.div
+      ref={sectionRef}
+      style={containerStyle}
+      className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden"
+    >
+      <SpiderWebAttack />
+      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+        <motion.div className="glytch-wrapper">
+          <motion.div
+            className="text-8xl font-extrabold tracking-widest glytch"
+            data-text="GLYTCH"
+          >
+            GLYTCH
+          </motion.div>
+          <div className="glytch-bubble-dot" />
         </motion.div>
-        <div className="glytch-bubble-dot" />
-      </motion.div>
-    </div>
-  </motion.div>
-);
+      </div>
+    </motion.div>
+  );
 }

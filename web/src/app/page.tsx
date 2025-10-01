@@ -8,13 +8,8 @@ import Partners from "@/components/sections/Partners";
 import Judges from "@/components/sections/Judges";
 import Tracks from "@/components/sections/Tracks";
 
-const Timeline = lazy(() => import("@/components/sections/Timeline").then(m => ({ default: m.Timeline })));
 const About = lazy(() => import("@/components/sections/About"));
 const Prizes = lazy(() => import("@/components/sections/Prizes"));
-const Resources = lazy(() => import("@/components/sections/Resources").then(m => ({ default: m.ResourcesSection })));
-const Contact = lazy(() => import("@/components/sections/Contact").then(m => ({ default: m.ContactSection })));
-const Rules = lazy(() => import("@/components/sections/Rules").then(m => ({ default: m.RulesSection })));
-const Author = lazy(() => import("@/components/sections/Author").then(m => ({ default: m.Author })));
 const FAQ = lazy(() => import("@/components/sections/FAQ"));
 
 export default function Home() {
@@ -76,7 +71,7 @@ export default function Home() {
               <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-500" />
               <span className="text-white/70">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 font-semibold text-white">
-                  Kamaraj Auditorium
+                  MG Auditorium
                 </span>
               </span>
             </div>
@@ -85,7 +80,7 @@ export default function Home() {
               <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500" />
               <span className="text-white/70">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 font-semibold text-white">
-                  24 Sep 2025
+                  3 Nov 2025
                 </span>
               </span>
             </div>
@@ -98,7 +93,7 @@ export default function Home() {
                 <div className="text-4xl md:text-5xl font-black text-white font-mono mb-1">
                   {String(item.value).padStart(2, '0')}
                 </div>
-                <div className={`text-xs font-bold text-transparent bg-clip-text bg-gradient-to-r ${item.color}`}>
+                <div className={`text-xs font-bold text-transparent bg-clip-text text-white`}>
                   {item.label}
                 </div>
               </div>

@@ -161,18 +161,10 @@ export default function Tracks() {
           text-align: center;
           margin-bottom: 48px;
         }
-        .subtitle {
-          color: rgba(255, 255, 255, 0.5);
-          font-size: 0.9rem;
-          letter-spacing: 3px;
-          text-transform: uppercase;
-          margin-bottom: 16px;
-          font-weight: 600;
-        }
         .title {
           font-size: 4rem;
           font-weight: 900;
-          background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+          background: #fff;
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -442,7 +434,6 @@ export default function Tracks() {
 
       <div className="container">
         <div className="header">
-          <div className="subtitle">Explore Challenge Domains</div>
           <h1 className="title">Tracks</h1>
         </div>
 

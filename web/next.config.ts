@@ -1,10 +1,12 @@
 import type { NextConfig } from "next";
 import path from "path";
+import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const nextConfig: NextConfig = {
-  swcMinify: true,
-  // If this project lives in a parent monorepo, ensure output tracing resolves
   outputFileTracingRoot: path.join(process.cwd(), ".."),
 };
 
-export default nextConfig;
+// Wrap with bundle analyzer
+export default withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+})(nextConfig);

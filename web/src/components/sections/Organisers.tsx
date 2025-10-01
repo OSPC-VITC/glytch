@@ -471,7 +471,7 @@ export default function Organizers() {
   }, []);
 
   return (
-    <section className="relative py-16 scroll-mt-32 overflow-hidden bg-black/70">
+    <section className="relative py-10 scroll-mt-32 overflow-hidden bg-black/70">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
           className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full opacity-20 blur-[120px]"
@@ -493,7 +493,7 @@ export default function Organizers() {
       <div className="container mx-auto px-6 relative z-10 max-w-7xl">
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
-            VOID Organizers
+            Organizers
           </h1>
           <p className="text-slate-400 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
             Powered by passionate communities and dedicated teams.{' '}

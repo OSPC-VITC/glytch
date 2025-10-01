@@ -238,7 +238,7 @@ export default function Judges() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <section className="relative py-16 scroll-mt-32 overflow-hidden bg-black/70">
+    <section className="relative py-10 scroll-mt-32 overflow-hidden bg-black/70">
       {/* Background Gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -263,7 +263,7 @@ export default function Judges() {
         {/* Title Section */}
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
-            VOID Judges
+            Judges
           </h1>
 
           {/* Coming Soon Badge */}

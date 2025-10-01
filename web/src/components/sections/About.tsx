@@ -230,7 +230,7 @@ export default function About() {
   return (
     <section 
       id="about" 
-      className="relative py-16 scroll-mt-32 overflow-hidden bg-black/70"
+      className="relative py-10 scroll-mt-32 overflow-hidden bg-black/70"
     >
       {/* Background Gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -255,7 +255,7 @@ export default function About() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
-            About VOID
+            About GLYTCH
           </h1>
           <p className="text-slate-400 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
             <span className="font-bold text-transparent bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text">24-hour</span> in‑person hackathon where builders explore ideas at the edge —

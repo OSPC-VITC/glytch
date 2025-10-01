@@ -224,7 +224,7 @@ export default function Partners() {
   }, []);
 
   return (
-    <section className="relative py-16 scroll-mt-32 overflow-hidden bg-black/70">
+    <section className="relative py-10 scroll-mt-32 overflow-hidden bg-black/70">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
           className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full opacity-20 blur-[120px]"

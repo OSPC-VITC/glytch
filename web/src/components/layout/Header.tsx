@@ -49,16 +49,18 @@ export function Header() {
   }, []);
 
   // Links with auto-close on click
+
+  {/* LinkRow */ }
   const LinkRow = ({ closeMenu }: { closeMenu?: () => void }) => (
     <>
-      <Link href="/#about" onClick={closeMenu} className="text-white/70 hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">About</Link>
-      <Link href="/#tracks" onClick={closeMenu} className="text-white/70 hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Tracks</Link>
-      <Link href="/#prizes" onClick={closeMenu} className="text-white/70 hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Prizes</Link>
-      <Link href="/#judges" onClick={closeMenu} className="text-white/70 hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Judges</Link>
-      <Link href="/#organisers" onClick={closeMenu} className="text-white/70 hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Organisers</Link>
-      <Link href="/#partners" onClick={closeMenu} className="text-white/70 hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Partners</Link>
-      <Link href="/#sponsors" onClick={closeMenu} className="text-white/70 hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Sponsors</Link>
-      <Link href="/#faq" onClick={closeMenu} className="text-white/70 hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">FAQ</Link>
+      <Link href="/#about" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">About</Link>
+      <Link href="/#tracks" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Tracks</Link>
+      <Link href="/#prizes" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Prizes</Link>
+      <Link href="/#judges" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Judges</Link>
+      <Link href="/#organisers" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Organisers</Link>
+      <Link href="/#partners" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Partners</Link>
+      <Link href="/#sponsors" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Sponsors</Link>
+      <Link href="/#faq" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">FAQ</Link>
     </>
   );
 
@@ -83,9 +85,9 @@ export function Header() {
         </div>
 
         {/* Desktop Devfolio Apply Button */}
-        <div 
-          className="hidden md:block apply-button" 
-          data-hackathon-slug="glytch" 
+        <div
+          className="hidden md:block apply-button"
+          data-hackathon-slug="glytch"
           data-button-theme="light"
           style={{ height: "44px", width: "312px" }}
         ></div>
@@ -106,10 +108,10 @@ export function Header() {
           <div className="flex flex-col gap-3">
             <LinkRow closeMenu={() => setMobileOpen(false)} />
             {/* Mobile Apply Button */}
-            <a 
-              href="https://devfolio.co" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://devfolio.co"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setMobileOpen(false)}
               className="px-4 py-2 mt-2 rounded-lg bg-pink-500 text-white text-center font-medium hover:bg-pink-400 transition"
             >

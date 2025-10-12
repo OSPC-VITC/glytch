@@ -28,15 +28,16 @@ export function SponsorCard({ level, name, href, logoSrc }: SponsorCardProps) {
       className={`p-6 bg-gradient-to-br rounded-xl border backdrop-blur-sm ${levelBasedClassNames}`}
     >
       <a href={href} target="_blank" rel="noopener noreferrer">
-        <div className="relative w-auto h-32 rounded-lg shadow-lg bg-white p-4">
-          <Image
-            src={logoSrc}
-            alt={`${name} logo`}
-            fill
-            className="object-contain"
-            sizes="(max-width: 768px) 100vw, 300px"
-          />
-        </div>
+        <div className="rounded-lg shadow-lg bg-white p-4 flex justify-center items-center">
+  <Image
+    src={logoSrc}
+    alt={`${name} logo`}
+    width={200}
+    height={100}
+    className="object-contain h-auto w-auto max-h-24"
+  />
+</div>
+
       </a>
     </div>
   );

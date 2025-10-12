@@ -3,6 +3,7 @@
 import React, { useState, memo, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FaGlobe, FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
+import Image from "next/image";
 
 function cn(...classes: (string | boolean | undefined | null)[]): string {
   return classes.filter(Boolean).join(' ');
@@ -25,7 +26,7 @@ const organizers: Organizer[] = [
   {
     id: "oscp",
     name: "OSPC",
-    logo: "https://raw.githubusercontent.com/ospc-vitc/.github/main/profile/logo.png",
+    logo: "/ospc.jpg",
     description: "The Open Source Programming Club at VIT Chennai fosters innovation through open-source collaboration and builds a vibrant tech community.",
     links: [
       { icon: <FaGlobe />, url: "https://ospc.in" },
@@ -42,7 +43,7 @@ const organizers: Organizer[] = [
   {
     id: "ieee-ras",
     name: "IEEE RAS VIT Chennai",
-    logo: "https://ras.ieeevitc.org/assets/img/logo.png",
+    logo: "/ieeeras.jpg",
     description: "The IEEE Robotics and Automation Society at VIT Chennai promotes robotics, automation, and AI with hands-on projects.",
     links: [
       { icon: <FaGlobe />, url: "https://ras.ieeevitc.org" },
@@ -59,7 +60,7 @@ const organizers: Organizer[] = [
   {
     id: "gdg",
     name: "GDG on Campus VIT Chennai",
-    logo: "https://developers.google.com/community/gdg/images/gdg-logo.png",
+    logo: "/gdg.jpg",
     description: "GDG VIT Chennai is a student-led developer community that hosts meetups, hackathons, and workshops for Google technologies.",
     links: [
       { icon: <FaGlobe />, url: "https://gdg.community.dev/gdg-on-campus-vit-chennai/" },
@@ -247,11 +248,14 @@ const OrganizerCard = memo(({ organizer, index, isHovered, onHover }: OrganizerC
               transform: logoTransform
             }}
           >
-            <img
-              src={organizer.logo}
-              alt={organizer.name}
-              className="h-24 w-24 object-contain"
-            />
+            <Image
+  src={organizer.logo}
+  alt={organizer.name}
+  width={96} // 24 * 4 = 96px
+  height={96}
+  className="object-contain"
+  priority={false} // set to true if it’s above the fold
+/>
           </div>
 
           <h3

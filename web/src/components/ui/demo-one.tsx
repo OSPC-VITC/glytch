@@ -9,6 +9,7 @@ interface FuzzyTextProps {
   color?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const FuzzyText = ({ children, color = "#FF0080" }: FuzzyTextProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -70,7 +71,7 @@ const FuzzyText = ({ children, color = "#FF0080" }: FuzzyTextProps) => {
       canvas.height = tightHeight + verticalMargin * 2;
       ctx.translate(horizontalMargin, verticalMargin);
 
-      let isHovering = false;
+      const isHovering = false;
       const fuzzRange = 30;
 
       const run = () => {

@@ -86,12 +86,11 @@ FloatingOrb.displayName = 'FloatingOrb';
 
 interface PrizeCardProps {
   prize: Prize;
-  index: number;
   isHovered: boolean;
   onHover: (hovered: boolean) => void;
 }
 
-const PrizeCard = memo(({ prize, index, isHovered, onHover }: PrizeCardProps) => {
+const PrizeCard = memo(({ prize, isHovered, onHover }: PrizeCardProps) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -344,7 +343,6 @@ export default function Prizes() {
             <PrizeCard
               key={prize.id}
               prize={prize}
-              index={index}
               isHovered={hoveredIndex === index}
               onHover={(hovered) => setHoveredIndex(hovered ? index : null)}
             />

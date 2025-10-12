@@ -4,6 +4,9 @@ import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(process.cwd(), ".."),
+  images: {
+    domains: ["raw.githubusercontent.com"],
+  },
 };
 
 // Wrap with bundle analyzer

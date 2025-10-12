@@ -339,7 +339,10 @@ export default function SpiderVerseTerminal({
 
   const tintVec = useMemo(() => hexToRgb('#FF0080'), []);
   const ditherValue = useMemo(() => (typeof dither === 'boolean' ? (dither ? 1 : 0) : dither), [dither]);
-  const gridMulArray = useMemo(() => new Float32Array(gridMul), [gridMul[0], gridMul[1]]);
+  
+  const gridMulX = gridMul[0];
+  const gridMulY = gridMul[1];
+  const gridMulArray = useMemo(() => new Float32Array([gridMulX, gridMulY]), [gridMulX, gridMulY]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     const ctn = containerRef.current;

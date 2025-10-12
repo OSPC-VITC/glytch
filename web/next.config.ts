@@ -5,8 +5,13 @@ import withBundleAnalyzer from "@next/bundle-analyzer";
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(process.cwd(), ".."),
   images: {
-    domains: ["raw.githubusercontent.com"],
-  },
+  remotePatterns: [
+    {
+      protocol: "https",
+      hostname: "raw.githubusercontent.com",
+    },
+  ],
+},
 };
 
 // Wrap with bundle analyzer

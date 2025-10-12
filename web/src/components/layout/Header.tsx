@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 export function Header() {
   const navRef = useRef<HTMLDivElement | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isHeroSection, setIsHeroSection] = useState(true);
 
   // Load Devfolio script (desktop only)
   useEffect(() => {
@@ -18,6 +19,22 @@ export function Header() {
     return () => {
       document.body.removeChild(script);
     };
+  }, []);
+
+  // Detect which section is visible
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroSection = document.querySelector('section:first-of-type, div:first-of-type');
+      if (!heroSection) return;
+
+      const rect = heroSection.getBoundingClientRect();
+      const isInHero = rect.top <= 100 && rect.bottom >= 0;
+      setIsHeroSection(isInHero);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Subtle follow-the-cursor motion for glass nav
@@ -48,19 +65,45 @@ export function Header() {
     };
   }, []);
 
-  // Links with auto-close on click
+  // Dynamic colors based on section
+  const navColors = isHeroSection
+    ? {
+        bg: 'bg-[rgba(20,0,0,0.5)]',
+        border: 'border-red-900/40',
+        shadow: 'shadow-[0_8px_30px_rgba(139,0,0,0.6)]',
+        innerBorder: 'rgba(255,0,51,0.15)',
+        innerBorder2: 'rgba(255,0,51,0.08)',
+        gradient: 'rgba(255,0,51,0.22)',
+        gradient2: 'rgba(255,0,51,0.08)',
+        linkHover: 'hover:text-red-400',
+        linkGlow: 'hover:drop-shadow-[0_0_8px_#ff0033]',
+        logo: 'text-red-400',
+        logoGlow: 'hover:drop-shadow-[0_0_8px_#ff0033]'
+      }
+    : {
+        bg: 'bg-[rgba(20,10,35,0.5)]',
+        border: 'border-purple-500/30',
+        shadow: 'shadow-[0_8px_30px_rgba(0,0,0,0.6)]',
+        innerBorder: 'rgba(168,85,247,0.15)',
+        innerBorder2: 'rgba(168,85,247,0.08)',
+        gradient: 'rgba(236,72,153,0.22)',
+        gradient2: 'rgba(236,72,153,0.08)',
+        linkHover: 'hover:text-pink-400',
+        linkGlow: 'hover:drop-shadow-[0_0_8px_#ec4899]',
+        logo: 'text-pink-400',
+        logoGlow: 'hover:drop-shadow-[0_0_8px_#ec4899]'
+      };
 
-  {/* LinkRow */ }
   const LinkRow = ({ closeMenu }: { closeMenu?: () => void }) => (
     <>
-      <Link href="/#about" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">About</Link>
-      <Link href="/#tracks" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Tracks</Link>
-      <Link href="/#prizes" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Prizes</Link>
-      <Link href="/#judges" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Judges</Link>
-      <Link href="/#organisers" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Organisers</Link>
-      <Link href="/#partners" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Partners</Link>
-      <Link href="/#sponsors" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">Sponsors</Link>
-      <Link href="/#faq" onClick={closeMenu} className="text-white/70 text-base md:text-lg font-semibold hover:text-pink-400 transition-all hover:drop-shadow-[0_0_8px_#ec4899]">FAQ</Link>
+      <Link href="/#about" onClick={closeMenu} className={`text-white/70 text-base md:text-lg font-semibold ${navColors.linkHover} transition-all ${navColors.linkGlow}`}>About</Link>
+      <Link href="/#tracks" onClick={closeMenu} className={`text-white/70 text-base md:text-lg font-semibold ${navColors.linkHover} transition-all ${navColors.linkGlow}`}>Tracks</Link>
+      <Link href="/#prizes" onClick={closeMenu} className={`text-white/70 text-base md:text-lg font-semibold ${navColors.linkHover} transition-all ${navColors.linkGlow}`}>Prizes</Link>
+      <Link href="/#judges" onClick={closeMenu} className={`text-white/70 text-base md:text-lg font-semibold ${navColors.linkHover} transition-all ${navColors.linkGlow}`}>Judges</Link>
+      <Link href="/#organisers" onClick={closeMenu} className={`text-white/70 text-base md:text-lg font-semibold ${navColors.linkHover} transition-all ${navColors.linkGlow}`}>Organisers</Link>
+      <Link href="/#partners" onClick={closeMenu} className={`text-white/70 text-base md:text-lg font-semibold ${navColors.linkHover} transition-all ${navColors.linkGlow}`}>Partners</Link>
+      <Link href="/#sponsors" onClick={closeMenu} className={`text-white/70 text-base md:text-lg font-semibold ${navColors.linkHover} transition-all ${navColors.linkGlow}`}>Sponsors</Link>
+      <Link href="/#faq" onClick={closeMenu} className={`text-white/70 text-base md:text-lg font-semibold ${navColors.linkHover} transition-all ${navColors.linkGlow}`}>FAQ</Link>
     </>
   );
 
@@ -68,16 +111,27 @@ export function Header() {
     <header className="fixed top-6 inset-x-0 z-50 flex justify-center">
       <nav
         ref={navRef}
-        className="relative flex items-center gap-3 md:gap-6 px-4 md:px-8 py-3 rounded-full
-          bg-[rgba(20,10,35,0.5)] backdrop-blur-lg backdrop-saturate-150
-          border border-purple-500/30 shadow-[0_8px_30px_rgba(0,0,0,0.6)] w-[calc(100%-1.5rem)] max-w-[1200px]"
+        className={`relative flex items-center gap-3 md:gap-6 px-4 md:px-8 py-3 rounded-full
+          ${navColors.bg} backdrop-blur-lg backdrop-saturate-150
+          border ${navColors.border} ${navColors.shadow} w-[calc(100%-1.5rem)] max-w-[1200px] transition-all duration-500`}
       >
         {/* Glass overlays */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 rounded-full" style={{ boxShadow: "inset 0 0 0 1px rgba(168,85,247,0.15), 0 0 0 1px rgba(168,85,247,0.08)" }} />
-        <div aria-hidden className="pointer-events-none absolute inset-0 rounded-full opacity-40" style={{ background: "radial-gradient(120% 140% at 50% 0%, rgba(236,72,153,0.22) 0%, rgba(236,72,153,0.08) 35%, transparent 60%)", maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)" }} />
+        <div 
+          aria-hidden 
+          className="pointer-events-none absolute inset-0 rounded-full transition-all duration-500" 
+          style={{ boxShadow: `inset 0 0 0 1px ${navColors.innerBorder}, 0 0 0 1px ${navColors.innerBorder2}` }} 
+        />
+        <div 
+          aria-hidden 
+          className="pointer-events-none absolute inset-0 rounded-full opacity-40 transition-all duration-500" 
+          style={{ 
+            background: `radial-gradient(120% 140% at 50% 0%, ${navColors.gradient} 0%, ${navColors.gradient2} 35%, transparent 60%)`, 
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)" 
+          }} 
+        />
 
         {/* Logo */}
-        <Link href="/" className="text-pink-400 font-semibold text-lg transition-all hover:drop-shadow-[0_0_8px_#ec4899] whitespace-nowrap">GLYTCH</Link>
+        <Link href="/" className={`${navColors.logo} font-semibold text-lg transition-all ${navColors.logoGlow} whitespace-nowrap`}>GLYTCH</Link>
 
         {/* Center nav links (desktop only) */}
         <div className="hidden md:flex items-center gap-5 flex-1 justify-center">

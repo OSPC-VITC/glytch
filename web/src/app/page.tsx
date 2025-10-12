@@ -3,6 +3,7 @@
 import { Suspense, lazy, useEffect, useState, useCallback, useMemo } from "react";
 import DemoOne from "@/components/ui/demo-one";
 import Loader from "@/components/ui/Loader";
+import { GlytchCountdown } from "@/components/ui/demo-one";
 
 const About = lazy(() => import("@/components/sections/About"));
 const Prizes = lazy(() => import("@/components/sections/Prizes"));
@@ -64,44 +65,7 @@ export default function Home() {
       <DemoOne />
 
       {/* Countdown */}
-      <div className="absolute bottom-[12%] left-1/2 -translate-x-1/2 w-full max-w-2xl pointer-events-auto">
-        <div className="bg-black/30 rounded-2xl border border-white/10 p-6">
-          {/* Info Row - Compact */}
-          <div className="flex items-center justify-center gap-8 mb-6 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-500" />
-              <span className="text-white/70">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 font-semibold text-white">
-                  MG Auditorium
-                </span>
-              </span>
-            </div>
-            <div className="w-px h-4 bg-white/20" />
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500" />
-              <span className="text-white/70">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 font-semibold text-white">
-                  3 Nov 2025
-                </span>
-              </span>
-            </div>
-          </div>
-
-          {/* Countdown Grid - Clean */}
-          <div className="grid grid-cols-4 gap-3">
-            {countdownItems.map((item) => (
-              <div key={item.label} className="text-center">
-                <div className="text-4xl md:text-5xl font-black text-white font-mono mb-1">
-                  {String(item.value).padStart(2, '0')}
-                </div>
-                <div className={`text-xs font-bold text-transparent bg-clip-text text-white`}>
-                  {item.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <GlytchCountdown />
 
       {/* Event Portal */}
       <main className="px-2 py-40 max-w-5xl mx-auto space-y-16 bg-transparent">

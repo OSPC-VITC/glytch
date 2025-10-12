@@ -18,10 +18,212 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'sterion';
+  src: url('/fonts/sterion.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* STERION - Hell Vibe */
+.sterion {
+  position: relative;
+  font-family: 'sterion', sans-serif;
+  color: #ff0033;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  overflow: visible;
+  text-shadow: 
+    0 0 10px rgba(255, 0, 51, 1),
+    0 0 20px rgba(255, 0, 51, 0.8),
+    0 0 30px rgba(139, 0, 0, 0.6),
+    0 0 40px rgba(139, 0, 0, 0.4),
+    0 0 70px rgba(0, 0, 0, 0.8);
+  filter: drop-shadow(0 0 15px #ff0033) drop-shadow(0 0 30px #8b0000);
+  animation: hellPulse 3s ease-in-out infinite, flicker 0.15s infinite;
+}
+
+.sterion::before,
+.sterion::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.sterion::before {
+  left: 3px;
+  text-shadow: 
+    -3px 0 #ff0033,
+    0 0 20px rgba(255, 0, 51, 0.8);
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  animation: hellGlitchTop 3s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.sterion::after {
+  left: -3px;
+  text-shadow: 
+    3px 0 #8b0000,
+    0 0 20px rgba(139, 0, 0, 0.8);
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  animation: hellGlitchBottom 2.5s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.sterion-wrapper {
+  position: relative;
+  padding: 2rem 3rem;
+  filter: drop-shadow(0 0 40px rgba(255, 0, 51, 0.5));
+}
+
+.sterion-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  background: 
+    radial-gradient(ellipse 100% 80% at 50% 50%, rgba(20, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 70%),
+    linear-gradient(135deg, rgba(139, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%);
+  border: 5px solid rgba(255, 0, 51, 0.8);
+  border-radius: 60% 40% 40% 60% / 50% 60% 40% 50%;
+  box-shadow: 
+    0 0 0 4px rgba(0, 0, 0, 0.8),
+    0 0 0 8px rgba(139, 0, 0, 0.6),
+    inset 0 8px 40px rgba(255, 0, 51, 0.2),
+    0 0 60px rgba(255, 0, 51, 0.6),
+    0 0 100px rgba(139, 0, 0, 0.5),
+    0 0 150px rgba(0, 0, 0, 0.8);
+  z-index: -1;
+  filter: 
+    drop-shadow(8px 8px 15px rgba(255, 0, 51, 0.6)) 
+    drop-shadow(-5px -5px 12px rgba(139, 0, 0, 0.5));
+  animation: hellBubblePulse 4s ease-in-out infinite, borderDistort 8s ease-in-out infinite;
+}
+
+.sterion-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: -25px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 0, 51, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: -2;
+  animation: hellGlow 2s ease-in-out infinite alternate;
+}
+
+/* Hell-themed animations */
+@keyframes hellPulse {
+  0%, 100% { 
+    text-shadow: 
+      0 0 10px rgba(255, 0, 51, 1),
+      0 0 20px rgba(255, 0, 51, 0.8),
+      0 0 30px rgba(139, 0, 0, 0.6),
+      0 0 40px rgba(139, 0, 0, 0.4),
+      0 0 70px rgba(0, 0, 0, 0.8);
+  }
+  50% { 
+    text-shadow: 
+      0 0 15px rgba(255, 0, 51, 1),
+      0 0 30px rgba(255, 0, 51, 1),
+      0 0 45px rgba(139, 0, 0, 0.8),
+      0 0 60px rgba(139, 0, 0, 0.6),
+      0 0 90px rgba(0, 0, 0, 0.9);
+  }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.96; }
+}
+
+@keyframes hellGlitchTop {
+  0%, 100% { 
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    transform: translateX(0);
+  }
+  20% { 
+    clip-path: polygon(0 15%, 100% 10%, 100% 50%, 0 55%);
+    transform: translateX(-8px) skewX(-2deg);
+  }
+  40% { 
+    clip-path: polygon(0 5%, 100% 0%, 100% 40%, 0 35%);
+    transform: translateX(6px) skewX(2deg);
+  }
+  60% { 
+    clip-path: polygon(0 10%, 100% 15%, 100% 60%, 0 50%);
+    transform: translateX(-5px) skewX(1deg);
+  }
+  80% { 
+    clip-path: polygon(0 0%, 100% 5%, 100% 48%, 0 42%);
+    transform: translateX(4px) skewX(-1deg);
+  }
+}
+
+@keyframes hellGlitchBottom {
+  0%, 100% { 
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    transform: translateX(0);
+  }
+  25% { 
+    clip-path: polygon(0 50%, 100% 60%, 100% 100%, 0 95%);
+    transform: translateX(7px) skewX(2deg);
+  }
+  50% { 
+    clip-path: polygon(0 65%, 100% 55%, 100% 100%, 0 100%);
+    transform: translateX(-6px) skewX(-2deg);
+  }
+  75% { 
+    clip-path: polygon(0 52%, 100% 58%, 100% 98%, 0 100%);
+    transform: translateX(5px) skewX(1deg);
+  }
+}
+
+@keyframes hellBubblePulse {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+    border-radius: 60% 40% 40% 60% / 50% 60% 40% 50%;
+  }
+  25% { 
+    transform: scale(1.03) rotate(1deg);
+    border-radius: 50% 50% 50% 50% / 60% 40% 60% 40%;
+  }
+  50% { 
+    transform: scale(1.05) rotate(-1deg);
+    border-radius: 40% 60% 60% 40% / 50% 60% 40% 50%;
+  }
+  75% { 
+    transform: scale(1.02) rotate(0.5deg);
+    border-radius: 55% 45% 45% 55% / 45% 55% 45% 55%;
+  }
+}
+
+@keyframes borderDistort {
+  0%, 100% {
+    border-radius: 60% 40% 40% 60% / 50% 60% 40% 50%;
+  }
+  33% {
+    border-radius: 45% 55% 60% 40% / 60% 40% 60% 40%;
+  }
+  66% {
+    border-radius: 55% 45% 50% 50% / 45% 55% 50% 50%;
+  }
+}
+
+@keyframes hellGlow {
+  0% { 
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  100% { 
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+/* GLYTCH - Original */
 .glytch {
   position: relative;
   font-family: 'glytch', sans-serif;
-  color: #000000; /* white text for contrast */
+  color: #000000;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   overflow: visible;
@@ -83,7 +285,6 @@
   50% { transform: scale(1.02) rotate(0.5deg); }
 }
 
-/* Glitch animations */
 @keyframes glitchTop {
   0% { clip: rect(0, 9999px, 0, 0); transform: translate(0); }
   10% { clip: rect(5px, 9999px, 20px, 0); transform: translate(-2px, -2px); }
@@ -104,25 +305,6 @@
   100% { clip: rect(0, 9999px, 0, 0); transform: translate(0); }
 }
 
-@keyframes glitchTop {
-  0% { clip: rect(0, 9999px, 0, 0); }
-  10% { clip: rect(10px, 9999px, 40px, 0); }
-  20% { clip: rect(20px, 9999px, 80px, 0); }
-  30% { clip: rect(60px, 9999px, 100px, 0); }
-  40% { clip: rect(10px, 9999px, 50px, 0); }
-  50% { clip: rect(40px, 9999px, 90px, 0); }
-  100% { clip: rect(0, 9999px, 0, 0); }
-}
-
-@keyframes glitchBottom {
-  0% { clip: rect(0, 9999px, 0, 0); }
-  10% { clip: rect(80px, 9999px, 140px, 0); }
-  20% { clip: rect(50px, 9999px, 100px, 0); }
-  30% { clip: rect(10px, 9999px, 60px, 0); }
-  40% { clip: rect(70px, 9999px, 120px, 0); }
-  50% { clip: rect(20px, 9999px, 80px, 0); }
-  100% { clip: rect(0, 9999px, 0, 0); }
-}
 /* Cyan loader */
 .loader {
   --s: 20px;

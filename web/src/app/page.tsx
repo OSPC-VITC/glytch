@@ -52,14 +52,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [calculateTimeLeft]);
 
-  // Memoize countdown items to prevent recreation
-  const countdownItems = useMemo(() => [
-    { value: timeLeft.days, label: "DAYS", color: "from-pink-500 to-rose-500" },
-    { value: timeLeft.hours, label: "HRS", color: "from-purple-500 to-violet-500" },
-    { value: timeLeft.minutes, label: "MIN", color: "from-blue-500 to-cyan-500" },
-    { value: timeLeft.seconds, label: "SEC", color: "from-cyan-500 to-teal-500" },
-  ], [timeLeft.days, timeLeft.hours, timeLeft.minutes, timeLeft.seconds]);
-
   return (
     <>
       <DemoOne />

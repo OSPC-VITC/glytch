@@ -39,7 +39,7 @@ const QA = [
   },
   {
     q: "Is there a fee?",
-    a: "The first round is completely free to attend. However, the second round requires a fee of Rs. 200.",
+    a: "No registration fee required. Just your skills and passion.",
     colors: {
       text: '#f2f2f2',
       glow: 'rgba(34, 211, 238, 0.5)',

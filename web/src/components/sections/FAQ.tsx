@@ -19,7 +19,7 @@ const QA = [
   },
   {
     q: "What should I bring?",
-    a: "Laptop, chargers, valid ID, and your creative energy. We'll take care of food and space.",
+    a: "Laptop, chargers, valid ID, and your creative energy.",
     colors: {
       text: '#f2f2f2',
       glow: 'rgba(139, 92, 246, 0.5)',

@@ -76,46 +76,7 @@ const organizers: Organizer[] = [
   }
 ];
 
-const teamSections = [
-  {
-    title: "Faculty Coordinators",
-    items: [
-      "Dr. R. Kumar – Professor, School of CS",
-      "Dr. A. Meena – Associate Professor, School of AI",
-    ],
-    colors: {
-      glow: 'rgba(34, 211, 238, 0.5)',
-      accent: '#22d3ee',
-      border: 'border-cyan-500/40'
-    }
-  },
-  {
-    title: "Organising Team",
-    items: [
-      "Prannvakanth – Student Coordinator",
-      "Priya Sharma – Event Manager",
-      "Rohit Verma – Operations Lead",
-    ],
-    colors: {
-      glow: 'rgba(249, 115, 22, 0.5)',
-      accent: '#f97316',
-      border: 'border-orange-500/40'
-    }
-  },
-  {
-    title: "Core Tech Team",
-    items: [
-      "Ananya Singh – Frontend Lead",
-      "Ravi Kumar – Backend Lead",
-      "Sneha Iyer – DevOps",
-    ],
-    colors: {
-      glow: 'rgba(168, 85, 247, 0.5)',
-      accent: '#a855f7',
-      border: 'border-purple-500/40'
-    }
-  }
-];
+
 
 const FloatingOrb = memo(({ delay, colors, index }: { delay: number; colors: string; index: number }) => {
   const style = useMemo(() => ({
@@ -312,155 +273,9 @@ const OrganizerCard = memo(({ organizer, index, isHovered, onHover }: OrganizerC
 );
 OrganizerCard.displayName = 'OrganizerCard';
 
-interface TeamSectionProps {
-  section: typeof teamSections[0];
-  index: number;
-  isHovered: boolean;
-  onHover: (hovered: boolean) => void;
-}
 
-const TeamSection = memo(({ section, index, isHovered, onHover }: TeamSectionProps) => {
-  const handleMouseEnter = useCallback(() => onHover(true), [onHover]);
-  const handleMouseLeave = useCallback(() => onHover(false), [onHover]);
 
-  const boxShadow = useMemo(() => 
-    isHovered
-      ? `0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 50px ${section.colors.glow}, inset 0 1px 0 rgba(255,255,255,0.1)`
-      : `0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 20px ${section.colors.glow}, inset 0 1px 0 rgba(255,255,255,0.05)`,
-    [isHovered, section.colors.glow]
-  );
 
-  const bgGradient = useMemo(() => ({
-    background: `radial-gradient(circle at 50% 0%, ${section.colors.glow} 0%, transparent 60%)`,
-    opacity: isHovered ? 0.3 : 0.15
-  }), [isHovered, section.colors.glow]);
-
-  const titleFilter = useMemo(() => 
-    isHovered ? `drop-shadow(0 0 20px ${section.colors.glow})` : 'none',
-    [isHovered, section.colors.glow]
-  );
-
-  const itemBoxShadow = useCallback((hovered: boolean) => 
-    hovered ? 'inset 0 1px 0 rgba(255,255,255,0.1)' : 'inset 0 1px 0 rgba(255,255,255,0.05)',
-    []
-  );
-
-  const accentLineStyle = useMemo(() => ({ 
-    background: section.colors.accent 
-  }), [section.colors.accent]);
-
-  const cornerStyle = useMemo(() => ({ 
-    borderColor: section.colors.accent,
-    opacity: isHovered ? 0.6 : 0.3
-  }), [isHovered, section.colors.accent]);
-
-  const orbKeys = useMemo(() => 
-    Array.from({ length: 3 }, (_, i) => `${section.title}-orb-${i}`),
-    [section.title]
-  );
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.15, duration: 0.6 }}
-      viewport={{ once: true, margin: "-50px" }}
-      className="relative transition-all duration-500 ease-out"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        transform: isHovered ? 'translateY(-4px)' : 'translateY(0px)',
-        willChange: 'transform'
-      }}
-    >
-      <div
-        className={cn(
-          'relative rounded-xl overflow-hidden transition-all duration-500',
-          'bg-gradient-to-b from-black via-slate-950 to-black',
-          'border',
-          section.colors.border,
-          isHovered && 'border-white/30'
-        )}
-        style={{ boxShadow }}
-      >
-        <div
-          className="absolute inset-0 transition-opacity duration-700"
-          style={bgGradient}
-        />
-
-        <div 
-          className="absolute inset-0 opacity-20 pointer-events-none"
-          style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%)',
-            animation: 'scan-slow 8s ease-in-out infinite'
-          }}
-        />
-
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {orbKeys.map((key, i) => (
-            <FloatingOrb key={key} delay={i * 1.5} colors={section.colors.accent} index={i + index * 3} />
-          ))}
-        </div>
-
-        <div 
-          className={cn(
-            'absolute inset-0 opacity-0 transition-opacity duration-500',
-            'bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12',
-            isHovered && 'opacity-100'
-          )}
-          style={{ animation: isHovered ? 'shimmer 2s ease-in-out infinite' : 'none' }}
-        />
-
-        <div className="relative z-10 p-8">
-          <h3
-            className="text-2xl font-bold text-center mb-6 tracking-tight transition-all duration-300 text-[#f2f2f2]"
-            style={{ filter: titleFilter }}
-          >
-            {section.title}
-          </h3>
-
-          <ul className="space-y-3">
-            {section.items.map((item, i) => (
-              <motion.li
-                key={i}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                className={cn(
-                  'relative py-3 px-4 rounded-lg transition-all duration-300',
-                  'bg-white/5 backdrop-blur-xl border border-white/10'
-                )}
-                style={{ boxShadow: itemBoxShadow(isHovered) }}
-              >
-                <p className="text-white/90 text-sm md:text-base">{item}</p>
-                
-                <div 
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r opacity-50"
-                  style={accentLineStyle}
-                />
-              </motion.li>
-            ))}
-          </ul>
-
-          <div 
-            className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 rounded-tl-xl transition-opacity duration-300"
-            style={cornerStyle}
-          />
-          <div 
-            className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 rounded-br-xl transition-opacity duration-300"
-            style={cornerStyle}
-          />
-        </div>
-      </div>
-    </motion.div>
-  );
-}, (prevProps, nextProps) => 
-  prevProps.section.title === nextProps.section.title &&
-  prevProps.isHovered === nextProps.isHovered &&
-  prevProps.index === nextProps.index
-);
-TeamSection.displayName = 'TeamSection';
 
 export default function Organizers() {
   const [hoveredOrgIndex, setHoveredOrgIndex] = useState<number | null>(null);
@@ -519,17 +334,7 @@ export default function Organizers() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {teamSections.map((section, index) => (
-            <TeamSection
-              key={section.title}
-              section={section}
-              index={index}
-              isHovered={hoveredTeamIndex === index}
-              onHover={handleTeamHover(index)}
-            />
-          ))}
-        </div>
+       
       </div>
 
       <style jsx>{`

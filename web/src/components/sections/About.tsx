@@ -1,11 +1,8 @@
 "use client";
 
-import React, { useState, memo } from 'react';
+import React, {memo } from 'react';
 import { motion } from 'framer-motion';
 
-function cn(...classes: (string | boolean | undefined | null)[]): string {
-  return classes.filter(Boolean).join(' ');
-}
 
 const FloatingOrb = memo(({ delay, color, index }: { delay: number; color: string; index: number }) => (
   <div
@@ -24,208 +21,19 @@ FloatingOrb.displayName = 'FloatingOrb';
 const stats = [
   { k: "Duration", v: "24 Hours", color: "#ff0080" },
   { k: "Team Size", v: "4 - 6", color: "#ff4000" },
-  { k: "Format", v: "In‑person", color: "#ff8000" },
+  { k: "Format", v: "In-person", color: "#ff8000" },
   { k: "Open to", v: "Everyone", color: "#8000ff" },
   { k: "Judging", v: "Live demo", color: "#ff0040" },
   { k: "Cost", v: "Free", color: "#4000ff" },
 ];
 
-const cards = [
-  {
-    title: "What to expect",
-    items: [
-      "Kickoff with problem framing & team sync",
-      "24 hours of focused building with mentors", 
-      "Midnight energy: snacks, music, breaks",
-      "Final live demos — no slides, just product"
-    ],
-    icon: "🚀",
-    color: "#ff0080"
-  },
-  {
-    title: "What we provide",
-    items: [
-      "High‑speed Wi‑Fi, power & workspaces",
-      "Meals, snacks, coffee & hydration",
-      "Swag, stickers & surprises",
-      "Expert mentors across all disciplines"
-    ],
-    icon: "🎁",
-    color: "#ff4000"
-  },
-  {
-    title: "Judging criteria",
-    items: [
-      "Impact & real-world usefulness",
-      "Technical execution & depth",
-      "Design craft & user experience",
-      "Innovation & creative approach"
-    ],
-    icon: "⚖️",
-    color: "#8000ff"
-  },
-  {
-    title: "Logistics",
-    items: [
-      "Bring your laptop, chargers & valid ID",
-      "Teams can form on‑site (solo welcome)",
-      "All code written during 24‑hour window",
-      "Be kind: follow our code of conduct"
-    ],
-    icon: "📋",
-    color: "#4000ff"
-  }
-];
 
-interface InfoCardProps {
-  card: typeof cards[0];
-  index: number;
-  isHovered: boolean;
-  onHover: (hovered: boolean) => void;
-}
 
-const InfoCard = memo(({ card, index, isHovered, onHover }: InfoCardProps) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      transition={{ delay: index * 0.15, duration: 0.7, type: "spring" }}
-      className="relative transition-all duration-500 ease-out cursor-pointer"
-      onMouseEnter={() => onHover(true)}
-      onMouseLeave={() => onHover(false)}
-      style={{
-        transform: isHovered ? 'scale(1.03) rotate(0.5deg)' : 'scale(1) rotate(0deg)'
-      }}
-    >
-      <div
-        className={cn(
-          'relative min-h-[340px] rounded-2xl overflow-hidden transition-all duration-500',
-          'bg-gradient-to-br from-black via-slate-950 to-black',
-          'border border-white/20',
-          isHovered && 'border-white/30'
-        )}
-        style={{
-          boxShadow: isHovered
-            ? `0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 50px ${card.color}80, inset 0 1px 0 rgba(255,255,255,0.1)`
-            : `0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 20px ${card.color}40, inset 0 1px 0 rgba(255,255,255,0.05)`
-        }}
-      >
-        {/* Background Gradient */}
-        <div
-          className="absolute inset-0 transition-opacity duration-700"
-          style={{
-            background: `radial-gradient(circle at 30% 20%, ${card.color}40 0%, transparent 70%)`,
-            opacity: isHovered ? 0.5 : 0.25
-          }}
-        />
 
-        {/* Scan Line */}
-        <div 
-          className="absolute inset-0 opacity-20"
-          style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%)',
-            animation: 'scan-slow 8s ease-in-out infinite'
-          }}
-        />
 
-        {/* Floating Orbs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(5)].map((_, i) => (
-            <FloatingOrb key={i} delay={i * 1.2} color={card.color} index={i + index * 5} />
-          ))}
-        </div>
 
-        {/* Shimmer Effect */}
-        <div 
-          className={cn(
-            'absolute inset-0 opacity-0 transition-opacity duration-500',
-            'bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12',
-            isHovered && 'opacity-100'
-          )}
-          style={{ animation: isHovered ? 'shimmer 2s ease-in-out infinite' : 'none' }}
-        />
-
-        {/* Content */}
-        <div className="relative z-10 h-full flex flex-col p-6 md:p-7">
-          {/* Header with Icon on Top */}
-          <div className="flex flex-col items-center text-center mb-6">
-            <div 
-              className={cn(
-                'rounded-2xl flex items-center justify-center mb-4 w-16 h-16 border-2 transition-all duration-500',
-                'bg-black/80'
-              )}
-              style={{ 
-                borderColor: isHovered ? card.color : 'rgba(255,255,255,0.2)',
-                boxShadow: isHovered ? `0 0 25px ${card.color}80` : 'none',
-                transform: isHovered ? 'rotate(5deg) scale(1.1)' : 'rotate(0deg) scale(1)'
-              }}
-            >
-              <span className="text-2xl">{card.icon}</span>
-            </div>
-            <h3
-              className="text-xl md:text-2xl font-bold tracking-tight transition-all duration-300 text-[#f2f2f2]"
-              style={{
-                filter: isHovered ? `drop-shadow(0 0 20px ${card.color}80)` : 'none'
-              }}
-            >
-              {card.title}
-            </h3>
-          </div>
-          
-          {/* Content */}
-          <div className="flex-1 space-y-3.5">
-            {card.items.map((item, itemIndex) => (
-              <motion.div 
-                key={itemIndex} 
-                className="flex items-start space-x-3"
-                initial={{ x: 0 }}
-                animate={{ x: isHovered ? 6 : 0 }}
-                transition={{ 
-                  duration: 0.3,
-                  delay: isHovered ? itemIndex * 0.05 : 0
-                }}
-              >
-                <div 
-                  className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 transition-all duration-300"
-                  style={{
-                    background: isHovered ? card.color : 'rgba(168, 85, 247, 0.6)',
-                    boxShadow: isHovered ? `0 0 15px ${card.color}` : 'none'
-                  }}
-                />
-                <p className={cn(
-                  'text-sm md:text-base leading-relaxed transition-colors duration-300',
-                  isHovered ? 'text-white' : 'text-slate-400'
-                )}>
-                  {item}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Corner Accents */}
-          <div 
-            className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 rounded-tl-2xl transition-opacity duration-300"
-            style={{ 
-              borderColor: card.color,
-              opacity: isHovered ? 0.7 : 0.35
-            }}
-          />
-          <div 
-            className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 rounded-br-2xl transition-opacity duration-300"
-            style={{ 
-              borderColor: card.color,
-              opacity: isHovered ? 0.7 : 0.35
-            }}
-          />
-        </div>
-      </div>
-    </motion.div>
-  );
-});
-InfoCard.displayName = 'InfoCard';
 
 export default function About() {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   return (
     <section 
@@ -294,18 +102,7 @@ export default function About() {
           </div>
         </div>
 
-        {/* Cards Grid - 2x2 Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10">
-          {cards.map((card, index) => (
-            <InfoCard
-              key={index}
-              card={card}
-              index={index}
-              isHovered={hoveredCard === index}
-              onHover={(hovered) => setHoveredCard(hovered ? index : null)}
-            />
-          ))}
-        </div>
+       
       </div>
 
       <style jsx>{`

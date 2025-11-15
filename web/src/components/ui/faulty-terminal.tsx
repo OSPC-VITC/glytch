@@ -1,6 +1,6 @@
 "use client";
 
-import { Renderer, Program, Mesh, Color, Triangle } from "ogl";
+import { Renderer, Program, Mesh, Color, Triangle, RenderTarget } from "ogl";
 import type { OGLRenderingContext } from "ogl";
 import React, { useEffect, useRef, useMemo, useCallback } from "react";
 
@@ -30,6 +30,7 @@ type SpiderVerseUniforms = {
   uBrightness: ShaderUniform;
   uWebIntensity: ShaderUniform;
   uPulseSpeed: ShaderUniform;
+  tDiffuse?: ShaderUniform
 };
 
 export interface SpiderVerseTerminalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -54,7 +55,7 @@ export interface SpiderVerseTerminalProps extends React.HTMLAttributes<HTMLDivEl
   pulseSpeed?: number;
 }
 
-const vertexShader = `
+const baseVertexShader = `
 attribute vec2 position;
 attribute vec2 uv;
 varying vec2 vUv;
@@ -64,7 +65,7 @@ void main() {
 }
 `;
 
-const fragmentShader = `
+const preFragmentShader = `
 precision mediump float;
 
 varying vec2 vUv;
@@ -91,16 +92,8 @@ uniform float uBrightness;
 uniform float uWebIntensity;
 uniform float uPulseSpeed;
 
-#define PI 3.14159265359
-#define TWO_PI 6.28318530718
 
 float time;
-
-float hash21(vec2 p){
-  p = fract(p * 234.56);
-  p += dot(p, p + 34.56);
-  return fract(p.x * p.y);
-}
 
 float noise(vec2 p) {
   return sin(p.x * 10.0) * sin(p.y * (3.0 + sin(time * 0.090909))) + 0.2; 
@@ -144,37 +137,6 @@ float pattern(vec2 p, out vec2 q, out vec2 r) {
   return fbm(p + r);
 }
 
-vec3 spiderWebOverlay(vec2 p, float t) {
-  vec2 center = vec2(0.5);
-  vec2 toCenter = p - center;
-  float dist = length(toCenter);
-  float angle = atan(toCenter.y, toCenter.x);
-  
-  float spokeCount = 8.0;
-  float spokeAngle = mod(angle + PI, TWO_PI / spokeCount);
-  float spokes = smoothstep(0.015, 0.0, spokeAngle) + smoothstep(0.015, 0.0, TWO_PI / spokeCount - spokeAngle);
-  
-  float ringPattern = 0.0;
-  for(float i = 1.0; i < 6.0; i += 1.0) {
-    float ringDist = i * 0.12;
-    float ring = 1.0 - smoothstep(0.0, 0.004, abs(dist - ringDist));
-    ringPattern += ring * 0.3;
-  }
-  
-  float pulse = sin(t * uPulseSpeed) * 0.5 + 0.5;
-  
-  vec3 hotPink = vec3(1.0, 0.0, 0.5);
-  vec3 electricPurple = vec3(0.5, 0.0, 0.8);
-  vec3 cyan = vec3(0.0, 0.8, 1.0);
-  
-  vec3 webColor = mix(hotPink, electricPurple, dist);
-  webColor = mix(webColor, cyan, pulse * 0.5);
-  
-  float webPattern = (spokes + ringPattern) * uWebIntensity;
-  webPattern *= (1.0 - smoothstep(0.5, 1.0, dist));
-  
-  return webColor * webPattern;
-}
 
 float digit(vec2 p){
     vec2 grid = uGridMul * 15.0;
@@ -221,8 +183,101 @@ float digit(vec2 p){
     return step(0.0, p.x) * step(p.x, 1.0) * step(0.0, p.y) * step(p.y, 1.0) * brightness;
 }
 
+vec2 barrel(vec2 uv){
+  vec2 c = uv * 2.0 - 1.0;
+  float r2 = dot(c, c);
+  c *= 1.0 + uCurvature * r2;
+  return c * 0.5 + 0.5;
+}
+
+void main() {
+    time = iTime * 0.333333;
+    vec2 uv = vUv;
+
+    if(uCurvature != 0.0){
+      uv = barrel(uv);
+    }
+    
+    vec2 p = uv * uScale;
+    gl_FragColor = vec4(digit(p), 0.0, 0.0, 1.0);
+}
+`;
+
+const postFragmentShader = `
+precision mediump float;
+
+varying vec2 vUv;
+uniform float iTime;
+uniform vec3  iResolution;
+uniform float uScale;
+uniform vec2  uGridMul;
+uniform float uDigitSize;
+uniform float uScanlineIntensity;
+uniform float uGlitchAmount;
+uniform float uFlickerAmount;
+uniform float uNoiseAmp;
+uniform float uChromaticAberration;
+uniform float uDither;
+uniform float uCurvature;
+uniform vec3  uTint;
+uniform vec2  uMouse;
+uniform float uMouseStrength;
+uniform float uUseMouse;
+uniform float uPageLoadProgress;
+uniform float uUsePageLoadAnimation;
+uniform float uBrightness;
+uniform float uWebIntensity;
+uniform float uPulseSpeed;
+
+uniform sampler2D tDiffuse;
+
+#define PI 3.14159265359
+#define TWO_PI 6.28318530718
+
+float hash21(vec2 p){
+  p = fract(p * 234.56);
+  p += dot(p, p + 34.56);
+  return fract(p.x * p.y);
+}
+
+vec3 spiderWebOverlay(vec2 p, float t) {
+  vec2 center = vec2(0.5);
+  vec2 toCenter = p - center;
+  float dist = length(toCenter);
+  float angle = atan(toCenter.y, toCenter.x);
+  
+  float spokeCount = 8.0;
+  float spokeAngle = mod(angle + PI, TWO_PI / spokeCount);
+  float spokes = smoothstep(0.015, 0.0, spokeAngle) + smoothstep(0.015, 0.0, TWO_PI / spokeCount - spokeAngle);
+  
+  float ringPattern = 0.0;
+  for(float i = 1.0; i < 6.0; i += 1.0) {
+    float ringDist = i * 0.12;
+    float ring = 1.0 - smoothstep(0.0, 0.004, abs(dist - ringDist));
+    ringPattern += ring * 0.3;
+  }
+  
+  float pulse = sin(t * uPulseSpeed) * 0.5 + 0.5;
+  
+  vec3 hotPink = vec3(1.0, 0.0, 0.5);
+  vec3 electricPurple = vec3(0.5, 0.0, 0.8);
+  vec3 cyan = vec3(0.0, 0.8, 1.0);
+  
+  vec3 webColor = mix(hotPink, electricPurple, dist);
+  webColor = mix(webColor, cyan, pulse * 0.5);
+  
+  float webPattern = (spokes + ringPattern) * uWebIntensity;
+  webPattern *= (1.0 - smoothstep(0.5, 1.0, dist));
+  
+  return webColor * webPattern;
+}
+
 float onOff(float a, float b, float c) {
   return step(c, sin(iTime + a * cos(iTime * b))) * uFlickerAmount;
+}
+
+float digit(vec2 uv) {
+  return texture2D(tDiffuse, uv).r;
 }
 
 float displace(vec2 look) {
@@ -232,7 +287,7 @@ float displace(vec2 look) {
 }
 
 vec3 getColor(vec2 p){
-    float bar = step(mod(p.y + time * 20.0, 1.0), 0.2) * 0.4 + 1.0;
+    float bar = step(mod(p.y + iTime * 0.333333 * 20.0, 1.0), 0.2) * 0.4 + 1.0;
     bar *= uScanlineIntensity;
     
     float displacement = displace(p);
@@ -254,45 +309,32 @@ vec3 getColor(vec2 p){
     return baseColor;
 }
 
-vec2 barrel(vec2 uv){
-  vec2 c = uv * 2.0 - 1.0;
-  float r2 = dot(c, c);
-  c *= 1.0 + uCurvature * r2;
-  return c * 0.5 + 0.5;
+void main(){
+  vec2 p = vUv * uScale;
+
+  vec3 color = getColor(p);
+
+  if(uChromaticAberration != 0.0){
+    vec2 ca = vec2(uChromaticAberration) / iResolution.xy;
+    color.r = getColor(p + ca).r;
+    color.b = getColor(p - ca).b;
+  }
+
+  color *= uTint;
+  
+  vec3 webOverlay = spiderWebOverlay(vUv, iTime);
+  color += webOverlay;
+  
+  color *= uBrightness;
+
+  if(uDither > 0.0){
+    float rnd = hash21(gl_FragCoord.xy);
+    color += (rnd - 0.5) * (uDither * 0.003922);
+  }
+
+  gl_FragColor = vec4(color, 1.0);
 }
-
-void main() {
-    time = iTime * 0.333333;
-    vec2 uv = vUv;
-
-    if(uCurvature != 0.0){
-      uv = barrel(uv);
-    }
-    
-    vec2 p = uv * uScale;
-    vec3 col = getColor(p);
-
-    if(uChromaticAberration != 0.0){
-      vec2 ca = vec2(uChromaticAberration) / iResolution.xy;
-      col.r = getColor(p + ca).r;
-      col.b = getColor(p - ca).b;
-    }
-
-    col *= uTint;
-    
-    vec3 webOverlay = spiderWebOverlay(uv, iTime);
-    col += webOverlay;
-    
-    col *= uBrightness;
-
-    if(uDither > 0.0){
-      float rnd = hash21(gl_FragCoord.xy);
-      col += (rnd - 0.5) * (uDither * 0.003922);
-    }
-
-    gl_FragColor = vec4(col, 1.0);
-}
-`;
+`
 
 const hexToRgb = (hex: string): [number, number, number] => {
   let h = hex.replace('#', '').trim();
@@ -396,24 +438,41 @@ export default function SpiderVerseTerminal({
       uPulseSpeed: { value: pulseSpeed },
     };
 
-    let program: Program | null = null;
+    const renderTarget = new RenderTarget(gl)
+
+    let preProgram: Program | null = null;
+    let postProgram: Program | null = null;
     try {
-      program = new Program(gl, { 
-        vertex: vertexShader, 
-        fragment: fragmentShader, 
-        uniforms: uniforms as unknown as Record<string, { value: unknown }> 
+      preProgram = new Program(gl, { 
+        vertex: baseVertexShader, 
+        fragment: preFragmentShader, 
+        uniforms: 
+          uniforms as unknown as Record<string, { value: unknown }> 
       });
+      postProgram = new Program(gl, { 
+        vertex: baseVertexShader, 
+        fragment: postFragmentShader, 
+        uniforms: 
+          uniforms as unknown as Record<string, { value: unknown }> 
+      });
+
+      postProgram.uniforms.tDiffuse = {
+        value: renderTarget.texture
+      }
     } catch {
       return;
     }
-    if (!program) return;
+    if (!preProgram || !postProgram) return;
 
-    programRef.current = program;
-    const mesh = new Mesh(gl, { geometry, program });
+    programRef.current = preProgram;
+
+    const preMesh = new Mesh(gl, { geometry, program: preProgram });
+    const postMesh = new Mesh(gl, { geometry, program: postProgram });
 
     const resize = () => {
       if (!ctn || !renderer) return;
       renderer.setSize(ctn.offsetWidth, ctn.offsetHeight);
+      renderTarget.setSize(ctn.offsetWidth, ctn.offsetHeight);
       uniforms.iResolution.value = new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height);
     };
 
@@ -452,7 +511,8 @@ export default function SpiderVerseTerminal({
         mouseUniform[1] = smoothMouse.y;
       }
       
-      renderer!.render({ scene: mesh });
+      renderer!.render({ scene: preMesh, target: renderTarget });
+      renderer!.render({ scene: postMesh });
     };
     
     rafRef.current = requestAnimationFrame(update);

@@ -30,10 +30,11 @@ type SpiderVerseUniforms = {
   uBrightness: ShaderUniform;
   uWebIntensity: ShaderUniform;
   uPulseSpeed: ShaderUniform;
-  tDiffuse?: ShaderUniform
+  tDiffuse?: ShaderUniform;
 };
 
-export interface SpiderVerseTerminalProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SpiderVerseTerminalProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   scale?: number;
   gridMul?: Vec2;
   digitSize?: number;
@@ -197,6 +198,8 @@ void main() {
     if(uCurvature != 0.0){
       uv = barrel(uv);
     }
+
+    uv.x *= iResolution.x / iResolution.y;
     
     vec2 p = uv * uScale;
     gl_FragColor = vec4(digit(p), 0.0, 0.0, 1.0);
@@ -334,16 +337,25 @@ void main(){
 
   gl_FragColor = vec4(color, 1.0);
 }
-`
+`;
 
 const hexToRgb = (hex: string): [number, number, number] => {
-  let h = hex.replace('#', '').trim();
-  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  let h = hex.replace("#", "").trim();
+  if (h.length === 3)
+    h = h
+      .split("")
+      .map((c) => c + c)
+      .join("");
   const num = parseInt(h, 16);
-  return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
+  return [
+    ((num >> 16) & 255) / 255,
+    ((num >> 8) & 255) / 255,
+    (num & 255) / 255,
+  ];
 };
 
-const DEFAULT_DPR = typeof window !== "undefined" ? Math.min(window.devicePixelRatio || 1, 2) : 1;
+const DEFAULT_DPR =
+  typeof window !== "undefined" ? Math.min(window.devicePixelRatio || 1, 2) : 1;
 
 export default function SpiderVerseTerminal({
   scale = 1,
@@ -379,12 +391,18 @@ export default function SpiderVerseTerminal({
   const loadAnimationStartRef = useRef<number>(0);
   const timeOffsetRef = useRef<number>(Math.random() * 100);
 
-  const tintVec = useMemo(() => hexToRgb('#FF0080'), []);
-  const ditherValue = useMemo(() => (typeof dither === 'boolean' ? (dither ? 1 : 0) : dither), [dither]);
-  
+  const tintVec = useMemo(() => hexToRgb("#FF0080"), []);
+  const ditherValue = useMemo(
+    () => (typeof dither === "boolean" ? (dither ? 1 : 0) : dither),
+    [dither],
+  );
+
   const gridMulX = gridMul[0];
   const gridMulY = gridMul[1];
-  const gridMulArray = useMemo(() => new Float32Array([gridMulX, gridMulY]), [gridMulX, gridMulY]);
+  const gridMulArray = useMemo(
+    () => new Float32Array([gridMulX, gridMulY]),
+    [gridMulX, gridMulY],
+  );
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     const ctn = containerRef.current;
@@ -392,7 +410,7 @@ export default function SpiderVerseTerminal({
     const rect = ctn.getBoundingClientRect();
     mouseRef.current = {
       x: (e.clientX - rect.left) / rect.width,
-      y: 1 - (e.clientY - rect.top) / rect.height
+      y: 1 - (e.clientY - rect.top) / rect.height,
     };
   }, []);
 
@@ -416,7 +434,13 @@ export default function SpiderVerseTerminal({
 
     const uniforms: SpiderVerseUniforms = {
       iTime: { value: 0 },
-      iResolution: { value: new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height) },
+      iResolution: {
+        value: new Color(
+          gl.canvas.width,
+          gl.canvas.height,
+          gl.canvas.width / gl.canvas.height,
+        ),
+      },
       uScale: { value: scale },
       uGridMul: { value: gridMulArray },
       uDigitSize: { value: digitSize },
@@ -438,27 +462,25 @@ export default function SpiderVerseTerminal({
       uPulseSpeed: { value: pulseSpeed },
     };
 
-    const renderTarget = new RenderTarget(gl)
+    const renderTarget = new RenderTarget(gl);
 
     let preProgram: Program | null = null;
     let postProgram: Program | null = null;
     try {
-      preProgram = new Program(gl, { 
-        vertex: baseVertexShader, 
-        fragment: preFragmentShader, 
-        uniforms: 
-          uniforms as unknown as Record<string, { value: unknown }> 
+      preProgram = new Program(gl, {
+        vertex: baseVertexShader,
+        fragment: preFragmentShader,
+        uniforms: uniforms as unknown as Record<string, { value: unknown }>,
       });
-      postProgram = new Program(gl, { 
-        vertex: baseVertexShader, 
-        fragment: postFragmentShader, 
-        uniforms: 
-          uniforms as unknown as Record<string, { value: unknown }> 
+      postProgram = new Program(gl, {
+        vertex: baseVertexShader,
+        fragment: postFragmentShader,
+        uniforms: uniforms as unknown as Record<string, { value: unknown }>,
       });
 
       postProgram.uniforms.tDiffuse = {
-        value: renderTarget.texture
-      }
+        value: renderTarget.texture,
+      };
     } catch {
       return;
     }
@@ -473,7 +495,11 @@ export default function SpiderVerseTerminal({
       if (!ctn || !renderer) return;
       renderer.setSize(ctn.offsetWidth, ctn.offsetHeight);
       renderTarget.setSize(ctn.offsetWidth, ctn.offsetHeight);
-      uniforms.iResolution.value = new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height);
+      uniforms.iResolution.value = new Color(
+        gl.canvas.width,
+        gl.canvas.height,
+        gl.canvas.width / gl.canvas.height,
+      );
     };
 
     const resizeObserver = new ResizeObserver(resize);
@@ -486,11 +512,11 @@ export default function SpiderVerseTerminal({
 
     const update = (t: number) => {
       rafRef.current = requestAnimationFrame(update);
-      
+
       if (pageLoadAnimation && loadAnimationStartRef.current === 0) {
         loadAnimationStartRef.current = t;
       }
-      
+
       if (!pause) {
         const elapsed = (t * 0.001 + timeOffsetRef.current) * timeScale;
         uniforms.iTime.value = elapsed;
@@ -498,34 +524,40 @@ export default function SpiderVerseTerminal({
       } else {
         uniforms.iTime.value = frozenTimeRef.current;
       }
-      
+
       if (pageLoadAnimation && loadAnimationStartRef.current > 0) {
-        const progress = Math.min((t - loadAnimationStartRef.current) * 0.0005, 1);
+        const progress = Math.min(
+          (t - loadAnimationStartRef.current) * 0.0005,
+          1,
+        );
         uniforms.uPageLoadProgress.value = progress;
       }
-      
+
       if (mouseReact) {
         smoothMouse.x += (mouse.x - smoothMouse.x) * 0.08;
         smoothMouse.y += (mouse.y - smoothMouse.y) * 0.08;
         mouseUniform[0] = smoothMouse.x;
         mouseUniform[1] = smoothMouse.y;
       }
-      
+
       renderer!.render({ scene: preMesh, target: renderTarget });
       renderer!.render({ scene: postMesh });
     };
-    
+
     rafRef.current = requestAnimationFrame(update);
     ctn.appendChild(gl.canvas);
 
-    if (mouseReact) window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    if (mouseReact)
+      window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       resizeObserver.disconnect();
-      if (mouseReact) window.removeEventListener('mousemove', handleMouseMove);
+      if (mouseReact) window.removeEventListener("mousemove", handleMouseMove);
       if (gl.canvas.parentElement === ctn) ctn.removeChild(gl.canvas);
-      const loseExt = gl.getExtension('WEBGL_lose_context') as { loseContext?: () => void } | null;
+      const loseExt = gl.getExtension("WEBGL_lose_context") as {
+        loseContext?: () => void;
+      } | null;
       loseExt?.loseContext?.();
       loadAnimationStartRef.current = 0;
       timeOffsetRef.current = Math.random() * 100;
@@ -551,15 +583,15 @@ export default function SpiderVerseTerminal({
     brightness,
     webIntensity,
     pulseSpeed,
-    handleMouseMove
+    handleMouseMove,
   ]);
 
   return (
-    <div 
-      ref={containerRef} 
-      className={`w-full h-full ${className ?? ""}`} 
-      style={style} 
-      {...rest} 
+    <div
+      ref={containerRef}
+      className={`w-full h-full ${className ?? ""}`}
+      style={style}
+      {...rest}
     />
   );
 }
